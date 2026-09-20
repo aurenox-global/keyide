@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_split"
+        android:icon="@drawable/ic_split"
+        android:title="Dividir editor/vista previa"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_preview"
+        android:icon="@drawable/ic_preview"
+        android:title="Vista previa"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_find"
+        android:icon="@drawable/ic_search"
+        android:title="Buscar y reemplazar"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_open_folder"
+        android:icon="@drawable/ic_files"
+        android:title="Abrir carpeta…"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_save"
+        android:title="Guardar"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/ic_info"
+        android:title="Acerca de"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Ajustes del copiloto"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_palette"
+        android:title="Paleta de comandos"
+        app:showAsAction="never" />
+</menu>

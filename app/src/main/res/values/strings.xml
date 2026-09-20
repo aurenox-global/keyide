@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">KeyIDE</string>
+    <string name="nav_files">Ficheros</string>
+    <string name="nav_keys">Teclas</string>
+    <string name="nav_run">Run</string>
+    <string name="nav_git">Git</string>
+    <string name="nav_ai">AI</string>
+
+    <string name="sheet_files">Explorador de proyecto</string>
+    <string name="sheet_terminal">Terminal integrado</string>
+    <string name="sheet_git">Control de versiones</string>
+    <string name="sheet_ai">Copiloto AI</string>
+
+    <string name="hint_command">Escribe un comando…</string>
+    <string name="hint_terminal">Comando…</string>
+    <string name="hint_prompt">Pide código, explica o arregla…</string>
+    <string name="hint_apikey">API key del copiloto</string>
+
+    <string name="action_save">Guardar</string>
+    <string name="action_send">Enviar</string>
+    <string name="action_new_file">Nuevo fichero</string>
+    <string name="action_clone">Clonar repo</string>
+    <string name="action_status">Estado</string>
+    <string name="action_commit">Commit + Push</string>
+    <string name="action_init">Inicializar repo</string>
+    <string name="action_open_palette">Paleta de comandos</string>
+</resources>
