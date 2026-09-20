@@ -27,6 +27,7 @@ import com.keyide.app.databinding.ActivityMainBinding
 import com.keyide.app.editor.Diagnostic
 import com.keyide.app.editor.EditorThemes
 import com.keyide.app.editor.Severity
+import com.keyide.app.editor.Snippets
 import com.keyide.app.editor.Syntax
 import com.keyide.app.files.Entry
 import com.keyide.app.files.FilesPanel
@@ -541,7 +542,7 @@ class MainActivity : AppCompatActivity() {
                     it.onNewFolder = { promptNewFolder() }
                     filesPanel = it
                 }
-                b.sheetTitle.text = getString(R.string.sheet_files)
+                b.sheetTitle.text = "Explorador · " + (if (safMode) safStack.lastOrNull()?.name else internalStack.lastOrNull()?.name).orEmpty()
                 b.sheetContent.addView(panel, params)
                 refreshExplorer()
             }
@@ -551,9 +552,14 @@ class MainActivity : AppCompatActivity() {
                 b.sheetContent.addView(panel, params)
             }
             SHEET_GIT -> {
-                val panel = gitPanel ?: GitPanel(this, settings).also { gitPanel = it }
+                val panel = gitPanel ?: GitPanel(
+                    this, settings,
+                    { internalStack.lastOrNull() ?: WorkspaceRepo.root(this) },
+                    { safMode }
+                ).also { gitPanel = it }
                 b.sheetTitle.text = getString(R.string.sheet_git)
                 b.sheetContent.addView(panel, params)
+                panel.refreshRoot()
             }
             SHEET_AI -> {
                 val panel = aiPanel ?: AiPanel(this, settings).also { aiPanel = it }
@@ -764,6 +770,11 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd("Edición: Buscar y reemplazar") { openSheet(SHEET_FIND) },
             CommandPalette.Cmd("Edición: Buscar en el proyecto…") { openSheet(SHEET_SEARCH) },
             CommandPalette.Cmd("Edición: Ir a definición") { goToDefinition() },
+            CommandPalette.Cmd("Edición: Información del símbolo (hover)") { showHover() },
+            CommandPalette.Cmd("Edición: Buscar referencias") { showReferences() },
+            CommandPalette.Cmd("Edición: Renombrar símbolo…") { renameSymbol() },
+            CommandPalette.Cmd("Edición: Formatear documento") { formatDocument() },
+            CommandPalette.Cmd("Edición: Insertar snippet…") { showSnippets() },
             CommandPalette.Cmd("Ver: Dividir editor + vista previa") { toggleSplit() },
             CommandPalette.Cmd("Ver: Vista previa") { openPreview() },
             CommandPalette.Cmd("Ver: Explorador") { openSheet(SHEET_FILES) },
@@ -1028,6 +1039,82 @@ class MainActivity : AppCompatActivity() {
                 applyEditorPrefs()
                 dialog.dismiss()
             }
+            .show()
+    }
+
+    // ── Snippets / formato / hover / referencias / renombrar ──────────────
+
+    private fun showSnippets() {
+        val snips = Snippets.forLanguage(b.editor.language)
+        val labels = snips.map { it.label }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle("Insertar snippet · ${b.editor.language}")
+            .setItems(labels) { _, which -> b.editor.insert(snips[which].code) }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun formatDocument() {
+        if (!b.editor.formatDocument()) toast("Formato no disponible para ${b.editor.language}")
+        else toast("Documento formateado")
+    }
+
+    private fun showHover() {
+        val word = b.editor.wordAtCursor()
+        if (word.isNullOrBlank()) { toast("Coloca el cursor sobre un nombre"); return }
+        val line = findDefinitionLine(b.editor.text(), word)
+        if (line != null) {
+            val code = b.editor.text().split('\n').getOrNull(line - 1)?.trim() ?: ""
+            AlertDialog.Builder(this)
+                .setTitle("\u2139 $word")
+                .setMessage("Definición en este fichero · línea $line\n\n$code")
+                .setPositiveButton("Ir") { _, _ -> b.editor.goToLine(line) }
+                .setNegativeButton("Cerrar", null)
+                .show()
+            return
+        }
+        val hit = findDefinitionInProject(word)
+        if (hit != null) {
+            AlertDialog.Builder(this)
+                .setTitle("\u2139 $word")
+                .setMessage("Definición en ${hit.name} · línea ${hit.line}\n\n${hit.preview}")
+                .setPositiveButton("Abrir") { _, _ -> openSearchResult(hit) }
+                .setNegativeButton("Cerrar", null)
+                .show()
+        } else {
+            toast("Sin información para «$word»")
+        }
+    }
+
+    private fun showReferences() {
+        val word = b.editor.wordAtCursor()
+        if (word.isNullOrBlank()) { toast("Coloca el cursor sobre un nombre"); return }
+        openSheet(SHEET_SEARCH)
+        searchPanel?.setQuery(word, true)
+    }
+
+    private fun renameSymbol() {
+        val word = b.editor.wordAtCursor()
+        if (word.isNullOrBlank()) { toast("Coloca el cursor sobre un nombre"); return }
+        val input = EditText(this).apply {
+            setText(word)
+            setPadding(dp(20), dp(12), dp(20), dp(12))
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Renombrar «$word»")
+            .setMessage("Se renombran todas las apariciones en este documento.")
+            .setView(input)
+            .setPositiveButton("Renombrar") { _, _ ->
+                val nn = input.text?.toString()?.trim().orEmpty()
+                if (nn.isEmpty() || nn == word) return@setPositiveButton
+                val t = b.editor.text()
+                val rx = Regex("\\b${Regex.escape(word)}\\b")
+                val count = rx.findAll(t).count()
+                if (count == 0) { toast("Sin coincidencias"); return@setPositiveButton }
+                b.editor.applyText(rx.replace(t, nn))
+                toast("Renombradas $count apariciones")
+            }
+            .setNegativeButton("Cancelar", null)
             .show()
     }
 

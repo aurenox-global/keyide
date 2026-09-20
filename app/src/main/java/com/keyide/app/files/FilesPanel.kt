@@ -55,9 +55,14 @@ class FilesPanel(context: Context) : LinearLayout(context) {
         }
         top.addView(upButton, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
         top.addView(pathLabel, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
-        top.addView(actionButton(context, "\uD83D\uDCC2 Abrir carpeta") { onPickFolder?.invoke() })
-        top.addView(actionButton(context, "\uFF0B Fichero") { onNewFile?.invoke() })
-        top.addView(actionButton(context, "\uD83D\uDCC1 Carpeta") { onNewFolder?.invoke() })
+
+        val actions = LinearLayout(context).apply {
+            orientation = HORIZONTAL
+            setPadding(dp(8), 0, dp(8), dp(6))
+        }
+        actions.addView(actionButton(context, "\uD83D\uDCC2 Abrir carpeta") { onPickFolder?.invoke() })
+        actions.addView(actionButton(context, "\uFF0B Fichero") { onNewFile?.invoke() })
+        actions.addView(actionButton(context, "\uD83D\uDCC1 Carpeta") { onNewFolder?.invoke() })
 
         rv.apply {
             layoutManager = LinearLayoutManager(context)
@@ -66,6 +71,7 @@ class FilesPanel(context: Context) : LinearLayout(context) {
         }
 
         addView(top, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+        addView(actions, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
         addView(rv, LayoutParams(LayoutParams.MATCH_PARENT, 0, 1f))
     }
 

@@ -69,7 +69,14 @@
 ## Navegación de código
 - **Ir a definición** (LSP-lite): `Ctrl+B` o paleta. Busca el nombre bajo el cursor en el
   documento y, si no, en el proyecto (interno o SAF), y salta a esa línea.
+- **Información del símbolo (hover)**: muestra la definición del nombre bajo el cursor.
+- **Buscar referencias**: abre la búsqueda de proyecto con la palabra del cursor.
+- **Renombrar símbolo**: renombra todas las apariciones del identificador en el documento.
 - **Buscar en el proyecto** (ver más arriba) para localizar cualquier texto.
+
+## Formateo y snippets
+- **Formatear documento**: re-indenta por llaves (JS/TS/Java/Kotlin/JSON/CSS).
+- **Snippets** por lenguaje insertables en el cursor.
 
 ## Comandos y atajos
 - **Paleta** (`Ctrl+K`): todas las acciones del IDE.

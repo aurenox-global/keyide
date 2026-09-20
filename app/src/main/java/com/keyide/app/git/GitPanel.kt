@@ -12,20 +12,24 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.keyide.app.data.Settings
-import com.keyide.app.files.WorkspaceRepo
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.io.File
 
 /**
- * Git NATIVO con JGit (sin binario externo): estado, init, commit, log,
- * push/pull y clone. Corre en hilo aparte y vuelca todo al área de salida.
+ * Git NATIVO con JGit. Opera sobre la **carpeta activa** del explorador
+ * (no sobre el demo interno fijo). Avisa si la carpeta activa es SAF, porque
+ * JGit necesita un filesystem real (java.io.File) y los árboles SAF no lo son.
  */
-class GitPanel(context: Context, private val settings: Settings) : LinearLayout(context) {
+class GitPanel(
+    context: Context,
+    private val settings: Settings,
+    private val dirProvider: () -> File,
+    private val isSaf: () -> Boolean
+) : LinearLayout(context) {
 
     private val out = TextView(context)
     private val scroll = ScrollView(context)
-    private val root: File = WorkspaceRepo.root(context)
 
     private val msgField = EditText(context)
     private val urlField = EditText(context)
@@ -39,6 +43,19 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
         orientation = VERTICAL
         setBackgroundColor(Color.parseColor("#0D1117"))
 
+        fun button(label: String, onClick: () -> Unit): Button = Button(context).apply {
+            text = label
+            textSize = 11f
+            isAllCaps = false
+            setOnClickListener { onClick() }
+        }
+
+        fun row(vararg views: android.view.View) = LinearLayout(context).apply {
+            orientation = HORIZONTAL
+            setPadding(dp(8), dp(2), dp(8), dp(2))
+            for (v in views) addView(v, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        }
+
         fun field(hint: String, type: Int = InputType.TYPE_CLASS_TEXT): EditText =
             EditText(context).apply {
                 this.hint = hint
@@ -49,20 +66,6 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
                 inputType = type
                 setPadding(dp(12), dp(10), dp(12), dp(10))
             }
-
-        fun button(label: String, onClick: () -> Unit): Button = Button(context).apply {
-            text = label
-            textSize = 11f
-            setOnClickListener { onClick() }
-        }
-
-        fun row(vararg views: android.view.View) = LinearLayout(context).apply {
-            orientation = HORIZONTAL
-            setPadding(dp(8), dp(2), dp(8), dp(2))
-            for (v in views) {
-                addView(v, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            }
-        }
 
         msgField.apply {
             hint = "Mensaje de commit"
@@ -130,8 +133,18 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
         addView(userField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(tokenField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(scroll, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
+    }
 
-        append("Git nativo (JGit) · repo: ${root.absolutePath}")
+    private fun cwd(): File = dirProvider()
+
+    /** Reinicia la salida y muestra el estado de la carpeta activa. */
+    fun refreshRoot() {
+        out.text = ""
+        append("Git nativo (JGit) · repo: ${cwd().absolutePath}")
+        if (isSaf()) {
+            append("\u26A0 La carpeta abierta es SAF (content://). Git necesita un")
+            append("  filesystem real, así que opera sobre el proyecto interno de arriba.")
+        }
         status()
     }
 
@@ -149,11 +162,11 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
         val st = git.status().call()
         val changed = (st.added + st.changed + st.modified + st.untracked + st.removed + st.missing)
         if (changed.isEmpty()) append("  (sin cambios)")
-        else changed.sorted().forEach { append("  ${st.untracked.contains(it).let { u -> if (u) "??" else " M" }} $it") }
+        else changed.sorted().forEach { append("  ${if (st.untracked.contains(it)) "??" else " M"} $it") }
     }
 
     private fun initRepo() = runOp("init") { git ->
-        if (File(root, ".git").exists()) append("Ya es un repositorio.")
+        if (File(cwd(), ".git").exists()) append("Ya es un repositorio.")
     }
 
     private fun commit() = runOp("commit") { git ->
@@ -188,7 +201,7 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
         val url = urlField.text?.toString()?.trim().orEmpty()
         if (url.isBlank()) { append("\u26A0 Pon una URL para clonar."); return@runOp }
         val name = url.substringAfterLast('/').removeSuffix(".git").ifBlank { "repo" }
-        val dest = File(root, "cloned-$name")
+        val dest = File(cwd(), "cloned-$name")
         if (dest.exists()) { append("\u26A0 Ya existe ${dest.name}"); return@runOp }
         Git.cloneRepository()
             .setURI(url)
@@ -214,15 +227,16 @@ class GitPanel(context: Context, private val settings: Settings) : LinearLayout(
         append("\n\u25B8 git $name")
         Thread {
             try {
-                val isRepo = File(root, ".git").exists()
+                val dir = cwd()
+                val isRepo = File(dir, ".git").exists()
                 if (!isRepo) {
                     if (name == "init") {
-                        Git.init().setDirectory(root).setInitialBranch("main").call().use { block(it) }
+                        Git.init().setDirectory(dir).setInitialBranch("main").call().use { block(it) }
                     } else {
-                        post { append("\u26A0 No hay repositorio. Pulsa Init.") }
+                        post { append("\u26A0 No hay repositorio en ${dir.name}. Pulsa Init.") }
                     }
                 } else {
-                    Git.open(root).use { block(it) }
+                    Git.open(dir).use { block(it) }
                 }
             } catch (e: Throwable) {
                 post { append("\u2716 ${e.javaClass.simpleName}: ${e.message ?: ""}") }

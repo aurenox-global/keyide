@@ -4,6 +4,23 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.11.0] — 2026-09-20
+
+### Añadido
+- **LSP-lite ampliado**: **hover** (información del símbolo con su definición), **buscar
+  referencias** (precarga la búsqueda en el proyecto con la palabra del cursor) y
+  **renombrar símbolo** (todas las apariciones del identificador en el documento).
+- **Formateo de documento**: re-indentado por anidamiento de `{} [] ()` para
+  JavaScript/TypeScript/Java/Kotlin/JSON/CSS (paleta: *Edición: Formatear documento*).
+- **Snippets por lenguaje**: plantillas (function, for, try/catch, def, class, HTML5,
+  regla CSS, shebang…) que se insertan en el cursor (paleta: *Insertar snippet…*).
+
+### Corregido
+- **Git ahora opera sobre la carpeta activa del explorador**, no sobre el proyecto interno
+  fijo. Avisa cuando la carpeta abierta es SAF (JGit necesita un filesystem real).
+- **El explorador muestra el nombre de la carpeta**: en la barra de ruta (ahora en su propia
+  fila, ya no se corta) y en el título del panel (*Explorador · <carpeta>*).
+
 ## [0.10.0] — 2026-09-20
 
 ### Añadido

@@ -212,6 +212,48 @@ class CodeEditorView @JvmOverloads constructor(
 
     fun redo() { editor.onTextContextMenuItem(android.R.id.redo) }
 
+    /** Reemplaza todo el texto (marcando como modificado) sin tocar el fichero. */
+    fun applyText(newText: String) {
+        suppress = true
+        editor.setText(newText)
+        Syntax.highlight(editor, language)
+        suppress = false
+        prevLen = editor.text?.length ?: 0
+        refreshGutter()
+        isModified = true
+        onChanged?.invoke(newText)
+    }
+
+    /**
+     * Formateo básico: re-indenta por anidamiento de {} [] ().
+     * Solo para lenguajes con llaves (no python/html/markdown/shell).
+     */
+    fun formatDocument(): Boolean {
+        val fmt = setOf("javascript", "typescript", "java", "kotlin", "json", "css")
+        if (language !in fmt) return false
+        val lines = text().split('\n')
+        if (lines.size > 5000) return false
+        val sb = StringBuilder()
+        var indent = 0
+        for ((i, raw) in lines.withIndex()) {
+            val trim = raw.trim()
+            if (trim.isEmpty()) {
+                if (i < lines.size - 1) sb.append('\n')
+                continue
+            }
+            val leadingClose = trim.startsWith("}") || trim.startsWith(")") || trim.startsWith("]")
+            val display = (indent - if (leadingClose) 1 else 0).coerceAtLeast(0)
+            repeat(display) { sb.append("  ") }
+            sb.append(trim)
+            if (i < lines.size - 1) sb.append('\n')
+            val opens = trim.count { it == '{' || it == '(' || it == '[' }
+            val closes = trim.count { it == '}' || it == ')' || it == ']' }
+            indent = (indent + opens - closes).coerceAtLeast(0)
+        }
+        applyText(sb.toString())
+        return true
+    }
+
     /** Palabra bajo el cursor (o la selección actual). Para "ir a definición". */
     fun wordAtCursor(): String? {
         val t = text()

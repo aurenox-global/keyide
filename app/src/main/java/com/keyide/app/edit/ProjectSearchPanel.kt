@@ -74,6 +74,13 @@ class ProjectSearchPanel(
         addView(scroll, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
     }
 
+    /** Rellena la consulta (y opcionalmente lanza la búsqueda). */
+    fun setQuery(q: String, autoRun: Boolean = true) {
+        query.setText(q)
+        query.setSelection(q.length)
+        if (autoRun) runSearch()
+    }
+
     private fun runSearch() {
         val q = query.text?.toString().orEmpty()
         results.removeAllViews()

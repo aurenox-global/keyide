@@ -7,8 +7,14 @@
 - [x] **Terminal con sesión persistente** (no PTY).
 - [x] **Node-lite** (`require` de módulos locales en el runner JS).
 - [x] **Ir a definición** (LSP-lite).
-- [ ] **LSP real** por proceso (hover, referencias, renombrar).
+- [x] **Hover, referencias y renombrar** (LSP-lite).
+- [x] **Formateo de documento y snippets**.
+- [ ] **LSP real** por proceso (hover semántico, referencias exactas, renombrar en proyecto).
 - [ ] **PTY real** (control de trabajos, apps de pantalla completa).
+- [ ] **Debugger on-device** con breakpoints.
+- [ ] **Node.js real** (npm / módulos nativos).
+- [ ] **Build on-device** (Gradle/Kotlin).
+- [ ] **Temas claros globales, i18n y tests**.
 - [ ] **Release firmado + subir a GitHub** (repo, CI, capturas).
 
 ## Medio plazo
