@@ -19,6 +19,12 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 - Se amplió el protocolo del servicio Node (comandos JSON `{script,args}`) para poder
   ejecutar scripts con argumentos (`process.argv`).
 
+### Web
+- **Sitio rediseñado: dinámico y llamativo** (`docs/index.html`): fondo animado con red de
+  partículas, blobs, **barra de progreso** de scroll, **terminal con animación de tecleo**,
+  contadores animados, tarjetas con glow, **carrusel de capturas** en marcos de móvil,
+  **timeline del changelog** y *reveal on scroll*. Todo vanilla (sin dependencias).
+
 ### Notas
 - El panel no compila proyectos Android/Gradle en el móvil (imposible sin JVM); para eso
   ofrece el terminal (Termux) o compilar en el PC.

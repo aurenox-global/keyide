@@ -4,270 +4,443 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KeyIDE · IDE de código para Android</title>
-<meta name="description" content="KeyIDE: IDE de código ligero para Android con editor con pestañas, vista previa web, ejecución real de JavaScript y Python, terminal, Git y copiloto de IA. Creado por Andrés Mag.">
+<meta name="description" content="KeyIDE: IDE de código para Android con editor con pestañas, vista previa web, ejecución real de JavaScript (V8 + Node) y Python, terminal PTY, Git nativo, depurador y copiloto IA. Creado por Andrés Mag.">
 <style>
 :root{
-  --bg:#0d1117; --panel:#161b22; --panel2:#1c2128; --line:#30363d;
-  --fg:#e6edf3; --mut:#8b949e; --acc:#58a6ff; --grn:#3fb950; --yel:#d29922;
-  --pur:#bc8cff; --red:#f85149;
+  --bg:#05070d; --panel:rgba(22,27,34,.72); --line:rgba(255,255,255,.10);
+  --fg:#e6edf3; --mut:#93a1b1;
+  --a1:#58a6ff; --a2:#bc8cff; --a3:#3fb950; --a4:#ff7b72;
+  --grad:linear-gradient(90deg,#58a6ff,#bc8cff 55%,#3fb950);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);
-  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.65}
-a{color:var(--acc);text-decoration:none}
-a:hover{text-decoration:underline}
-code{background:var(--panel2);padding:2px 6px;border-radius:5px;
-  font-family:'DejaVu Sans Mono',Menlo,Consolas,monospace;font-size:.9em}
-pre{background:#05080d;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto}
-pre code{background:none;padding:0}
-nav{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.92);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-nav .wrap{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:18px;
-  padding:12px 20px;flex-wrap:wrap}
-nav b{font-size:16px;letter-spacing:.3px}
-nav b span{color:var(--acc)}
-nav a{color:var(--mut);font-size:13.5px}
-nav a:hover{color:var(--fg);text-decoration:none}
-header.hero{max-width:1080px;margin:0 auto;padding:64px 20px 34px;text-align:center}
-header.hero h1{font-size:clamp(30px,6vw,54px);margin:0 0 10px;line-height:1.1}
-header.hero h1 .g{background:linear-gradient(90deg,#58a6ff,#bc8cff);-webkit-background-clip:text;background-clip:text;color:transparent}
-header.hero p.claim{color:var(--mut);font-size:clamp(15px,2.4vw,19px);max-width:720px;margin:0 auto 22px}
-.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-block;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14.5px;border:1px solid var(--line)}
-.btn.primary{background:var(--acc);color:#06121f;border-color:var(--acc)}
-.btn.primary:hover{filter:brightness(1.08);text-decoration:none}
-.btn.ghost{background:var(--panel);color:var(--fg)}
-.btn.ghost:hover{background:var(--panel2);text-decoration:none}
-.author{margin-top:18px;color:var(--mut);font-size:13.5px}
-section{max-width:1080px;margin:0 auto;padding:38px 20px;border-top:1px solid var(--line)}
-section h2{font-size:23px;margin:0 0 6px}
-section h2 .n{color:var(--amber,#d29922);font-size:13px;display:block;letter-spacing:2px;color:var(--mut);text-transform:uppercase;font-weight:600}
-section p.lead{color:var(--mut);margin-top:4px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
-.card h3{margin:0 0 8px;font-size:16px}
+body{
+  margin:0;background:var(--bg);color:var(--fg);overflow-x:hidden;
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.65;
+}
+a{color:var(--a1);text-decoration:none}
+code,pre{font-family:'DejaVu Sans Mono',Menlo,Consolas,monospace}
+
+/* ---------- fondo animado ---------- */
+.bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:
+  radial-gradient(1000px 600px at 80% -10%,rgba(88,166,255,.15),transparent 60%),
+  radial-gradient(900px 600px at -10% 20%,rgba(188,140,255,.14),transparent 60%),
+  var(--bg);}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;animation:float 18s ease-in-out infinite}
+.b1{width:420px;height:420px;background:#1f6feb;top:-80px;left:-60px}
+.b2{width:380px;height:380px;background:#8957e5;bottom:-80px;right:-40px;animation-delay:-6s}
+.b3{width:300px;height:300px;background:#2ea043;top:40%;left:60%;animation-delay:-11s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-40px) scale(1.12)}}
+canvas#net{position:fixed;inset:0;z-index:-1;opacity:.35}
+
+/* ---------- barra de progreso ---------- */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad);z-index:60;box-shadow:0 0 12px rgba(88,166,255,.8)}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+  background:rgba(5,7,13,.72);border-bottom:1px solid var(--line)}
+nav .wrap{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:20px;padding:12px 22px;flex-wrap:wrap}
+nav .logo{font-weight:800;font-size:18px;letter-spacing:.4px}
+nav .logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav a.link{color:var(--mut);font-size:13.5px;position:relative}
+nav a.link:hover{color:#fff}
+nav a.link::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--grad);transition:width .25s}
+nav a.link:hover::after{width:100%}
+nav .spacer{flex:1}
+nav .gh{font-size:13px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:#fff}
+nav .gh:hover{background:rgba(255,255,255,.06);text-decoration:none}
+
+/* ---------- hero ---------- */
+header{max-width:1120px;margin:0 auto;padding:72px 22px 26px;text-align:center;position:relative}
+.badge-top{display:inline-block;font-size:12px;color:#cfe3ff;border:1px solid var(--line);
+  background:rgba(88,166,255,.10);padding:5px 14px;border-radius:999px;margin-bottom:18px}
+h1{font-size:clamp(38px,8vw,76px);line-height:1.03;margin:0 0 14px;letter-spacing:-1.5px}
+h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:200% auto;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.claim{color:var(--mut);font-size:clamp(15px,2.4vw,20px);max-width:760px;margin:0 auto 26px}
+.claim b{color:#fff}
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{position:relative;overflow:hidden;display:inline-block;padding:14px 26px;border-radius:12px;
+  font-weight:700;font-size:15px;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);text-decoration:none}
+.btn.primary{background:var(--grad);color:#04121f;border:none;box-shadow:0 8px 30px rgba(88,166,255,.35)}
+.btn.ghost{background:rgba(255,255,255,.04);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.09)}
+.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg)}
+.btn:hover::after{animation:sheen .8s}
+@keyframes sheen{to{left:130%}}
+.author{margin-top:20px;color:var(--mut);font-size:13.5px}
+.typing{margin:34px auto 0;max-width:640px;text-align:left;border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;background:rgba(3,6,12,.85);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.typing .bar{display:flex;gap:7px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+.typing .dot{width:11px;height:11px;border-radius:50%}
+.tb1{background:#ff5f57}.tb2{background:#febc2e}.tb3{background:#28c840}
+.typing .name{color:var(--mut);font-size:12px;margin-left:8px}
+.typing pre{margin:0;padding:16px;font-size:13px;color:#c9d1d9;min-height:118px;white-space:pre-wrap}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--a3);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- stats ---------- */
+.stats{max-width:1120px;margin:36px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;padding:0 22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;backdrop-filter:blur(8px)}
+.stat b{display:block;font-size:30px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{color:var(--mut);font-size:12.5px}
+
+/* ---------- secciones ---------- */
+section{max-width:1120px;margin:0 auto;padding:64px 22px}
+.kicker{color:var(--a2);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700}
+h2{font-size:clamp(24px,4vw,36px);margin:6px 0 10px;letter-spacing:-.6px}
+p.lead{color:var(--mut);max-width:840px;margin:0 0 8px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.on{opacity:1;transform:none}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px;margin-top:26px}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;
+  backdrop-filter:blur(10px);transition:transform .25s,box-shadow .25s,border-color .25s;overflow:hidden}
+.card:hover{transform:translateY(-6px);border-color:rgba(88,166,255,.5);box-shadow:0 18px 50px rgba(88,166,255,.18)}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px 120px at 50% -20%,rgba(88,166,255,.18),transparent);opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card .ico{font-size:24px}
+.card h3{margin:10px 0 6px;font-size:16.5px}
 .card p{margin:0;color:var(--mut);font-size:13.5px}
-.card .ico{font-size:22px}
-ul.feat{list-style:none;padding:0;margin:16px 0 0}
-ul.feat li{padding:10px 0 10px 30px;border-bottom:1px dashed var(--line);position:relative;font-size:14.5px}
-ul.feat li:before{content:"✔";position:absolute;left:0;color:var(--grn)}
-ul.todo li:before{content:"○";color:var(--yel)}
-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px;display:block;overflow-x:auto}
-th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;white-space:nowrap}
-th{background:var(--panel2);color:var(--mut);font-weight:600}
-.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-top:20px}
-.shots figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
-.shots img{width:100%;border-radius:8px;display:block}
-.shots figcaption{color:var(--mut);font-size:12px;text-align:center;margin-top:8px}
-.note{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.35);
-  border-radius:10px;padding:12px 16px;color:#e3c07b;font-size:13.5px;margin-top:16px}
-footer{border-top:1px solid var(--line);padding:30px 20px 60px;text-align:center;color:var(--mut);font-size:13.5px}
-.chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--mut);
-  border-radius:999px;padding:3px 11px;font-size:12px;margin:3px 5px 3px 0}
-.log{border-left:2px solid var(--line);padding-left:18px;margin-top:20px}
-.log h3{margin:18px 0 4px;font-size:15px}
-.log small{color:var(--mut)}
-.log ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--mut)}
+
+/* ---------- capturas ---------- */
+.carousel{position:relative;margin-top:28px}
+.track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 18px;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.phone{scroll-snap-align:center;flex:0 0 auto;width:220px;border-radius:26px;padding:9px;
+  background:linear-gradient(160deg,#1b2230,#0b1017);border:1px solid var(--line);
+  box-shadow:0 22px 50px rgba(0,0,0,.55);transition:transform .3s}
+.phone:hover{transform:translateY(-8px) scale(1.02)}
+.phone .screen{border-radius:19px;overflow:hidden;background:#000}
+.phone img{display:block;width:100%;height:auto}
+.phone .cap{text-align:center;color:var(--mut);font-size:12px;padding:8px 4px 2px}
+.dots{display:flex;gap:8px;justify-content:center;margin-top:4px}
+.dot-nav{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.2);border:0;cursor:pointer;transition:background .25s,transform .25s}
+.dot-nav.on{background:var(--a1);transform:scale(1.25)}
+
+/* ---------- pasos / install ---------- */
+.steps{counter-reset:s;display:grid;gap:14px;margin-top:22px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px 16px 62px;position:relative;backdrop-filter:blur(8px)}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:16px;width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;font-weight:800;color:#04121f;background:var(--grad)}
+.step b{color:#fff}
+.step p{margin:4px 0 0;color:var(--mut);font-size:13.5px}
+.note{background:rgba(210,153,34,.10);border:1px solid rgba(210,153,34,.35);border-radius:12px;
+  padding:12px 16px;color:#e8c883;font-size:13.5px;margin-top:16px}
+pre.code{background:#03060c;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:auto;font-size:13px;color:#c9d1d9}
+
+/* ---------- timeline changelog ---------- */
+.timeline{position:relative;margin-top:26px;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--a1),var(--a2),transparent)}
+.tl{position:relative;margin:0 0 16px}
+.tl::before{content:"";position:absolute;left:-24px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--a1);box-shadow:0 0 0 4px rgba(88,166,255,.18)}
+.tl h4{margin:0;font-size:15px}
+.tl small{color:var(--mut)}
+.tl ul{margin:6px 0 0;padding-left:18px;color:var(--mut);font-size:13.5px}
+
+/* ---------- roadmap ---------- */
+.rm{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.rm li{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 16px 13px 44px;position:relative;font-size:14px}
+.rm li::before{content:"○";position:absolute;left:16px;color:var(--a2)}
+.rm li.done::before{content:"✔";color:var(--a3)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:34px 22px 70px;text-align:center;color:var(--mut);font-size:13.5px}
+footer .big{font-size:22px;color:#fff;margin:0 0 6px;font-weight:800}
+#top{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  background:rgba(22,27,34,.9);color:#fff;cursor:pointer;display:grid;place-items:center;font-size:18px;
+  opacity:0;pointer-events:none;transition:opacity .3s;z-index:55}
+#top.on{opacity:1;pointer-events:auto}
+@media(max-width:640px){section{padding:48px 18px}header{padding:52px 18px 20px}}
 </style>
 </head>
 <body>
+<div class="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+<canvas id="net"></canvas>
+<div id="prog"></div>
 
 <nav><div class="wrap">
-  <b>Key<span>IDE</span></b>
-  <a href="#funciones">Funciones</a>
-  <a href="#capturas">Capturas</a>
-  <a href="#instalar">Instalar</a>
-  <a href="#compilar">Compilar</a>
-  <a href="#python">Python</a>
-  <a href="#arquitectura">Arquitectura</a>
-  <a href="#changelog">Cambios</a>
-  <a href="#roadmap">Roadmap</a>
-  <a href="https://github.com/aurenox-global/keyide">GitHub ↗</a>
+  <span class="logo">Key<span>IDE</span></span>
+  <a class="link" href="#funciones">Funciones</a>
+  <a class="link" href="#capturas">Capturas</a>
+  <a class="link" href="#instalar">Instalar</a>
+  <a class="link" href="#compilar">Compilar</a>
+  <a class="link" href="#cambios">Cambios</a>
+  <a class="link" href="#roadmap">Roadmap</a>
+  <span class="spacer"></span>
+  <a class="gh" href="https://github.com/aurenox-global/keyide">GitHub ↗</a>
 </div></nav>
 
-<header class="hero">
-  <h1>Key<span class="g">IDE</span> 🧠</h1>
-  <p class="claim">IDE de código ligero para <b>Android</b>: editor con pestañas y autocompletado,
-  vista previa web, <b>ejecución real de JavaScript y Python</b>, terminal, <b>Git</b> y copiloto de IA.</p>
+<header>
+  <span class="badge-top">v0.19.0 · Android 8+ · MIT</span>
+  <h1>Key<span class="g">IDE</span></h1>
+  <p class="claim">El IDE de código que <b>faltaba en Android</b>: pestañas, vista previa,
+  <b>ejecución real de JavaScript (V8 + Node) y Python</b>, terminal PTY, Git, depurador y copiloto IA.</p>
   <div class="btns">
     <a class="btn primary" href="https://github.com/aurenox-global/keyide/releases/latest">⬇️ Descargar APK</a>
-    <a class="btn ghost" href="https://github.com/aurenox-global/keyide">Ver código en GitHub</a>
+    <a class="btn ghost" href="https://github.com/aurenox-global/keyide">Ver código</a>
   </div>
-  <p class="author">Creado por <b>Andrés Mag</b> · © 2026 · Licencia MIT</p>
+  <p class="author">Creado por <b>Andrés Mag</b> · © 2026</p>
+
+  <div class="typing">
+    <div class="bar"><span class="dot tb1"></span><span class="dot tb2"></span><span class="dot tb3"></span><span class="name">keyide — terminal</span></div>
+    <pre id="term"></pre>
+  </div>
 </header>
 
-<section id="que-es">
-  <h2><span class="n">Qué es</span>Un IDE pensado para el móvil</h2>
+<div class="stats reveal">
+  <div class="stat"><b data-count="20">0</b><span>versiones publicadas</span></div>
+  <div class="stat"><b data-count="12">0</b><span>lenguajes resaltados</span></div>
+  <div class="stat"><b data-count="30">0</b><span>funciones</span></div>
+  <div class="stat"><b data-count="3">0</b><span>arquitecturas</span></div>
+</div>
+
+<section id="que-es" class="reveal">
+  <div class="kicker">Qué es</div>
+  <h2>Un IDE completo, pensado para el móvil</h2>
   <p class="lead">KeyIDE nace de analizar lo que <b>falta</b> en los mejores editores de Android
-  (Acode, Squircle IDE, DroidEdit, Spck, AIDE, CxxDroid, Pydroid) y en los entornos en la
-  nube (Codespaces, Replit). Sus carencias repetidas —multi-archivo real, autocompletado,
-  diagnósticos, terminal, run on-device, Git e IA— son justo lo que KeyIDE cubre.</p>
-  <p>Interfaz <b>mobile-first</b>: el editor manda y las herramientas viven en <i>bottom sheets</i>
-  deslizables. Con pantalla ancha o en horizontal se activa el <b>split editor | vista previa</b>.</p>
-  <div>
-    <span class="chip">Kotlin</span><span class="chip">Android Views + Material 3</span>
-    <span class="chip">minSdk 26</span><span class="chip">compileSdk 35</span>
-    <span class="chip">Chaquopy (Python)</span><span class="chip">JGit</span>
-    <span class="chip">SAF</span><span class="chip">IA multi-proveedor</span>
-    <span class="chip">NDK/JNI (PTY)</span><span class="chip">Depurador JS</span>
-  </div>
+  (Acode, Squircle IDE, DroidEdit, Spck, AIDE, CxxDroid, Pydroid) y en los entornos en la nube
+  (Codespaces, Replit). Sus carencias repetidas —multi-archivo real, autocompletado, diagnósticos,
+  terminal, run on-device, Git, IA— son justo lo que KeyIDE cubre.</p>
+  <p class="lead">Interfaz <b>mobile-first</b>: el editor manda y las herramientas viven en
+  <i>bottom sheets</i>; con pantalla ancha se activa el <b>split editor | vista previa</b>.</p>
 </section>
 
-<section id="funciones">
-  <h2><span class="n">Funciones</span>Todo lo que incluye</h2>
+<section id="funciones" class="reveal">
+  <div class="kicker">Funciones</div>
+  <h2>Todo lo que incluye</h2>
   <div class="grid">
-    <div class="card"><div class="ico">📝</div><h3>Editor completo</h3><p>Números de línea, gutter con diagnósticos, resaltado de sintaxis, auto-indentación y auto-cierre de paréntesis/comillas.</p></div>
-    <div class="card"><div class="ico">💡</div><h3>Autocompletado</h3><p>LSP-lite: palabras clave del lenguaje + todas las palabras del documento.</p></div>
-    <div class="card"><div class="ico">📑</div><h3>Multi-archivo</h3><p>Pestañas con buffer independiente e indicador de cambios (<code>●</code>).</p></div>
-    <div class="card"><div class="ico">▶️</div><h3>Run real</h3><p>JavaScript en el motor V8 (con <code>require</code> local) y Python embebido. Salida en el terminal.</p></div>
-    <div class="card"><div class="ico">👁️</div><h3>Vista previa</h3><p>WebView para HTML/CSS/JS/SVG y render de Markdown, o en split lateral.</p></div>
-    <div class="card"><div class="ico">🖥️</div><h3>Terminal</h3><p>Sesión de shell persistente: <code>cd</code> y entorno se conservan entre comandos.</p></div>
-    <div class="card"><div class="ico">🔀</div><h3>Git nativo</h3><p>JGit: estado, init, commit, log, pull, push y clone, sin binario externo.</p></div>
-    <div class="card"><div class="ico">✨</div><h3>Copiloto IA</h3><p>DeepSeek, OpenAI, Claude, Qwen, Kimi, GLM y modelo local (llama.cpp).</p></div>
-    <div class="card"><div class="ico">📂</div><h3>Carpetas reales</h3><p>SAF: abre, navega, crea y edita en cualquier carpeta del dispositivo.</p></div>
+    <div class="card"><div class="ico">📝</div><h3>Editor completo</h3><p>Números de línea, gutter con diagnósticos, resaltado, auto-indentación y auto-cierre.</p></div>
+    <div class="card"><div class="ico">💡</div><h3>Autocompletado</h3><p>Palabras clave del lenguaje + todas las palabras del documento.</p></div>
+    <div class="card"><div class="ico">📑</div><h3>Multi-archivo</h3><p>Pestañas con buffer independiente e indicador de cambios.</p></div>
+    <div class="card"><div class="ico">▶️</div><h3>Run real</h3><p>JavaScript (V8, o <b>Node.js con npm</b>) y <b>Python embebido</b>.</p></div>
+    <div class="card"><div class="ico">👁️</div><h3>Vista previa</h3><p>WebView para HTML/CSS/JS/SVG y render de Markdown, o en split.</p></div>
+    <div class="card"><div class="ico">🖥️</div><h3>Terminal</h3><p><b>PTY real</b> (apps interactivas) con fallback a sesión persistente.</p></div>
+    <div class="card"><div class="ico">🐞</div><h3>Depurador</h3><p>Puntos de parada (toque en el margen) y traza para <b>JS y Python</b>.</p></div>
+    <div class="card"><div class="ico">🎯</div><h3>LSP-lite</h3><p>Ir a definición, hover, referencias y renombrar símbolo.</p></div>
     <div class="card"><div class="ico">🔍</div><h3>Buscar y reemplazar</h3><p>En el documento y en todo el proyecto, con salto a la línea.</p></div>
-    <div class="card"><div class="ico">🎯</div><h3>Ir a definición</h3><p>Salta a la definición de un nombre dentro del documento o del proyecto.</p></div>
-    <div class="card"><div class="ico">🐞</div><h3>Depurador (JS/Python)</h3><p>Puntos de parada tocando el margen del editor y traza de las líneas ejecutadas.</p></div>
-    <div class="card"><div class="ico">🟢</div><h3>Node.js real</h3><p>Motor <b>nodejs-mobile</b> embebido: <code>require</code> de <code>node_modules</code> (npm), con V8 como alternativa.</p></div>
-    <div class="card"><div class="ico">🔨</div><h3>Compilar (Build)</h3><p>Checks de sintaxis .py/.js, <b>npm install/run</b> y <code>build.sh</code> en el propio móvil.</p></div>
-    <div class="card"><div class="ico">🎨</div><h3>Temas y tamaño</h3><p>One Dark, Monokai y Claro; fuente de 10 a 24sp; persistencia de sesión.</p></div>
+    <div class="card"><div class="ico">🔨</div><h3>Compilar</h3><p>Checks <code>.py</code>/<code>.js</code>, <b>npm install/run</b> y <code>build.sh</code>.</p></div>
+    <div class="card"><div class="ico">🔀</div><h3>Git nativo</h3><p>JGit: estado, init, commit, log, pull, push y clone.</p></div>
+    <div class="card"><div class="ico">✨</div><h3>Copiloto IA</h3><p>DeepSeek, OpenAI, Claude, Qwen, Kimi, GLM o modelo local.</p></div>
+    <div class="card"><div class="ico">📂</div><h3>Carpetas reales</h3><p>SAF: abre, navega, crea y edita en cualquier carpeta.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>Tema global</h3><p>Oscuro, Claro o Sistema; idioma ES/EN; temas del editor.</p></div>
+    <div class="card"><div class="ico">🧩</div><h3>Snippets y formato</h3><p>Plantillas por lenguaje y re-indentado de documento.</p></div>
+    <div class="card"><div class="ico">⌨️</div><h3>Atajos</h3><p>Ctrl+K/S/F/B/O/P/W/Z y paleta de comandos.</p></div>
   </div>
 </section>
 
-<section id="capturas">
-  <h2><span class="n">Capturas</span>Interfaz real</h2>
-  <p class="lead">Así se ve KeyIDE en un móvil (v0.10.0).</p>
-  <div class="shots">
-    <figure><img src="screenshots/01-editor.jpg" alt="Editor"><figcaption>Editor con pestañas</figcaption></figure>
-    <figure><img src="screenshots/02-split-preview.jpg" alt="Split + vista previa"><figcaption>Split + vista previa</figcaption></figure>
-    <figure><img src="screenshots/03-teclas.jpg" alt="Barra de teclas"><figcaption>Barra de símbolos</figcaption></figure>
-    <figure><img src="screenshots/04-explorador-saf.jpg" alt="Explorador SAF"><figcaption>Explorador (SAF)</figcaption></figure>
-    <figure><img src="screenshots/05-terminal.jpg" alt="Terminal"><figcaption>Terminal</figcaption></figure>
-    <figure><img src="screenshots/06-git.jpg" alt="Git"><figcaption>Control de versiones</figcaption></figure>
-    <figure><img src="screenshots/07-copiloto.jpg" alt="Copiloto IA"><figcaption>Copiloto IA</figcaption></figure>
+<section id="capturas" class="reveal">
+  <div class="kicker">Capturas</div>
+  <h2>Así se ve en un móvil real</h2>
+  <div class="carousel">
+    <div class="track" id="track"></div>
+    <div class="dots" id="dots"></div>
   </div>
 </section>
 
-<section id="instalar">
-  <h2><span class="n">Instalar</span>Descarga el APK</h2>
-  <p class="lead">Descarga el último APK desde <a href="https://github.com/aurenox-global/keyide/releases/latest">Releases</a>.</p>
-  <pre><code>1. Descarga el .apk (o el .zip y descomprímelo)
-2. En el móvil: Ajustes → permitir "instalar apps de orígenes desconocidos"
-3. Abre el APK e instala
-4. Al abrir verás el editor con el proyecto de ejemplo</code></pre>
-  <div class="note">El APK incluye el intérprete de Python, por eso pesa ~40 MB. Es normal en apps con Python embebido.</div>
+<section id="instalar" class="reveal">
+  <div class="kicker">Instalar</div>
+  <h2>Descarga y listo</h2>
+  <div class="steps">
+    <div class="step"><b>Descarga el APK</b><p>Desde <a href="https://github.com/aurenox-global/keyide/releases/latest">Releases</a> (o el .zip y descomprímelo).</p></div>
+    <div class="step"><b>Permite orígenes desconocidos</b><p>Ajustes → instalar apps de orígenes desconocidos.</p></div>
+    <div class="step"><b>Abre el APK e instala</b><p>Al abrir verás el editor con un proyecto de ejemplo.</p></div>
+  </div>
+  <div class="note">El APK pesa ~160 MB porque incluye el intérprete de Python y Node.js (npm) para las 3 arquitecturas. Es normal en apps con runtimes embebidos.</div>
 </section>
 
-<section id="compilar">
-  <h2><span class="n">Compilar</span>Desde el código fuente</h2>
-  <p class="lead">Requisitos: JDK 17 y Android SDK 35. Gradle va incluido (wrapper).</p>
-  <pre><code>git clone https://github.com/aurenox-global/keyide.git
+<section id="compilar" class="reveal">
+  <div class="kicker">Compilar</div>
+  <h2>Desde el código fuente</h2>
+  <p class="lead">Requisitos: JDK 17 y Android SDK 35.</p>
+  <pre class="code">git clone https://github.com/aurenox-global/keyide.git
 cd keyide
 echo "sdk.dir=/ruta/a/Android/Sdk" &gt; local.properties
-./gradlew assembleDebug
-# APK → app/build/outputs/apk/debug/app-debug.apk</code></pre>
+scripts/fetch-nodejs-mobile.sh   # libnode.so + npm (van en .gitignore)
+./gradlew assembleRelease</pre>
 </section>
 
-<section id="python">
-  <h2><span class="n">Python</span>Dependencias (pip)</h2>
-  <p class="lead">Chaquopy <b>no</b> tiene pip en el dispositivo: los paquetes se instalan
-  <b>al compilar</b> y viajan dentro del APK.</p>
-  <pre><code>chaquopy {
-    defaultConfig {
-        pip {
-            install("requests")
-            // install("numpy")
-            // install("beautifulsoup4")
-        }
-    }
-}</code></pre>
-  <div class="note">El bloque <code>python { }</code> dentro de <code>android.defaultConfig</code>
-  <b>no compila</b> en Kotlin DSL; hay que usar <code>chaquopy { }</code> a nivel de proyecto.</div>
+<section id="cambios" class="reveal">
+  <div class="kicker">Cambios</div>
+  <h2>Changelog</h2>
+  <div class="timeline" id="tl"></div>
+  <p style="margin-top:8px"><a href="https://github.com/aurenox-global/keyide/blob/main/CHANGELOG.md">Ver CHANGELOG.md completo →</a></p>
 </section>
 
-<section id="arquitectura">
-  <h2><span class="n">Arquitectura</span>Cómo está hecho</h2>
-  <pre><code>app/src/main/java/com/keyide/app/
-├── MainActivity.kt        orquesta todo (documentos, sheets, split, paleta)
-├── editor/                CodeEditorView · GutterView · Syntax · EditorTheme · Diagnostic
-├── files/                 Entry · FilesPanel · WorkspaceRepo         (explorador + SAF)
-├── terminal/              ShellSession · TerminalPanel               (shell persistente)
-├── git/                   GitPanel · GitClient                       (JGit)
-├── ai/                    AiClient · AiPanel                         (OpenAI/Anthropic)
-├── run/                   JsRunner (V8 + CommonJS) · PythonBridge    (Chaquopy)
-├── preview/               PreviewPanel                               (WebView)
-├── settings/              SettingsPanel                              (proveedor/modelo)
-├── palette/               CommandPalette
-├── data/                  Settings · AiProviders
-└── util/                  Markdown
-app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
-  <p>Decisiones: <b>Views+Material 3</b> (tamaño/estabilidad), <b>JGit 5.13</b> (Java 8, compatible
-  Android), <b>SAF</b> para carpetas reales, <b>LSP-lite</b> in-process, y <b>WebView V8</b> para JS.</p>
-</section>
-
-<section id="changelog">
-  <h2><span class="n">Cambios</span>Changelog</h2>
-  <div class="log">
-    <h3>0.19.0 <small>— 2026-09-21</small></h3>
-    <ul><li><b>Compilar / Build</b> on-device: checks .py/.js, <b>npm install/run</b> y build.sh.</li></ul>
-    <h3>0.18.0 <small>— 2026-09-20</small></h3>
-    <ul><li><b>Node.js real embebido</b> (nodejs-mobile) con motor V8/Node seleccionable y fallback.</li></ul>
-    <h3>0.17.0 <small>— 2026-09-20</small></h3>
-    <ul><li><b>i18n cerrada</b>: paleta de comandos (36) y diálogos en ES/EN.</li></ul>
-    <h3>0.16.0 <small>— 2026-09-20</small></h3>
-    <ul><li><b>Depurador de Python</b> (puntos de parada + traza con <code>sys.settrace</code>).</li></ul>
-    <h3>0.15.0 <small>— 2026-09-20</small></h3>
-    <ul><li>Depurador JS: <b>puntos de parada</b> (toca el margen) y <b>traza</b> de líneas ejecutadas.</li></ul>
-    <h3>0.14.0</h3>
-    <ul><li>Terminal con <b>PTY real</b> (NDK/JNI) para apps interactivas + fallback al shell persistente.</li></ul>
-    <h3>0.13.0</h3>
-    <ul><li><b>i18n ES/EN</b> (textos a recursos) y selector de idioma.</li></ul>
-    <h3>0.12.0</h3>
-    <ul><li><b>Tema global</b> de la app (oscuro/claro/sistema) y <b>tests</b> unitarios.</li></ul>
-    <h3>0.11.0</h3>
-    <ul><li><b>LSP-lite</b>: hover, buscar referencias y renombrar símbolo.</li>
-    <li><b>Formateo</b> de documento y <b>snippets</b>. Git sobre la carpeta activa.</li></ul>
-    <h3>0.10.0 <small>— 2026-09-20</small></h3>
-    <ul><li>Node-lite: <code>require()</code> de módulos locales (mini CommonJS), <code>module.exports</code>, <code>process</code>.</li>
-    <li>Ir a definición (LSP-lite) con Ctrl+B o paleta.</li></ul>
-    <h3>0.9.0</h3>
-    <ul><li>Temas del editor (One Dark, Monokai, Claro) y tamaño de fuente.</li>
-    <li>Persistencia de sesión (pestañas abiertas).</li>
-    <li>Terminal con sesión de shell persistente.</li></ul>
-    <h3>0.8.0</h3>
-    <ul><li>Buscar y reemplazar (documento y proyecto).</li>
-    <li>Guardar como / renombrar / borrar. Deshacer/rehacer.</li></ul>
-    <h3>0.7.1 / 0.7.0</h3>
-    <ul><li>Fix de la barra inferior con el teclado.</li>
-    <li>Explorador con SAF, "Acerca de", documentación y LICENSE.</li></ul>
-    <h3>0.6.0 / 0.5.0</h3>
-    <ul><li>Dependencias pip empaquetadas (requests).</li>
-    <li>Git nativo con JGit.</li></ul>
-    <h3>0.4.0 – 0.1.0</h3>
-    <ul><li>Pestañas, split editor/preview, Python embebido, JS real, autocompletado,
-    vista previa, multi-proveedor de IA y esqueleto inicial.</li></ul>
-  </div>
-  <p>Detalle completo en <a href="https://github.com/aurenox-global/keyide/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
-</section>
-
-<section id="roadmap">
-  <h2><span class="n">Roadmap</span>Lo que viene</h2>
-  <ul class="feat todo">
-    <li>Build <b>Gradle/Kotlin</b> on-device (necesita JVM)</li>
+<section id="roadmap" class="reveal">
+  <div class="kicker">Roadmap</div>
+  <h2>Hecho y lo que queda</h2>
+  <ul class="rm">
+    <li class="done">Editor, pestañas, autocompletado y diagnósticos</li>
+    <li class="done">Vista previa web y split editor/preview</li>
+    <li class="done">Run real de JavaScript (V8) y Python embebido</li>
+    <li class="done">Terminal con PTY real (con fallback)</li>
+    <li class="done">Depurador JS y Python (puntos de parada + traza)</li>
+    <li class="done">LSP-lite: definición, hover, referencias, renombrar</li>
+    <li class="done">Git nativo (JGit) y explorador con SAF</li>
+    <li class="done">Copiloto IA multi-proveedor y tema global ES/EN</li>
+    <li class="done">Node.js real (nodejs-mobile) + npm</li>
+    <li class="done">Compilar/Build on-device (checks, npm, scripts)</li>
+    <li>Build Gradle/Kotlin on-device (necesita JVM)</li>
+    <li>Verificación en dispositivo de Node/PTY/npm</li>
   </ul>
 </section>
 
-<section id="licencia">
-  <h2><span class="n">Licencia</span>MIT</h2>
-  <p class="lead">MIT © 2026 <b>Andrés Mag</b>. Ver
-  <a href="https://github.com/aurenox-global/keyide/blob/main/LICENSE">LICENSE</a>.</p>
-</section>
-
 <footer>
-  <p><b>KeyIDE</b> · Creado por Andrés Mag · © 2026</p>
+  <p class="big">KeyIDE</p>
+  <p>Creado por <b>Andrés Mag</b> · © 2026 · Licencia MIT</p>
   <p><a href="https://github.com/aurenox-global/keyide">github.com/aurenox-global/keyide</a></p>
 </footer>
+<button id="top" title="Volver arriba">↑</button>
 
+<script>
+/* ---------- fondo: red de partículas ---------- */
+(function(){
+  var c = document.getElementById('net'), x = c.getContext('2d'), ps = [], W, H;
+  function size(){ W = c.width = innerWidth; H = c.height = innerHeight; }
+  size(); addEventListener('resize', size);
+  for (var i=0;i<70;i++) ps.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35});
+  function tick(){
+    x.clearRect(0,0,W,H);
+    for (var i=0;i<ps.length;i++){
+      var p=ps[i]; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1;
+      x.beginPath(); x.arc(p.x,p.y,1.6,0,6.283); x.fillStyle='rgba(88,166,255,.55)'; x.fill();
+      for (var j=i+1;j<ps.length;j++){
+        var q=ps[j], dx=p.x-q.x, dy=p.y-q.y, d=dx*dx+dy*dy;
+        if (d<16000){ x.strokeStyle='rgba(88,166,255,'+(0.16*(1-d/16000))+')'; x.lineWidth=1;
+          x.beginPath(); x.moveTo(p.x,p.y); x.lineTo(q.x,q.y); x.stroke(); }
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ---------- barra de progreso + botón top ---------- */
+(function(){
+  var p=document.getElementById('prog'), t=document.getElementById('top');
+  addEventListener('scroll',function(){
+    var h=document.documentElement, m=h.scrollHeight-h.clientHeight;
+    p.style.width=(m>0?(h.scrollTop/m*100):0)+'%';
+    t.classList.toggle('on', h.scrollTop>500);
+  });
+  t.onclick=function(){ scrollTo({top:0,behavior:'smooth'}); };
+})();
+
+/* ---------- reveal ---------- */
+(function(){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(e){ io.observe(e); });
+})();
+
+/* ---------- terminal animada ---------- */
+(function(){
+  var el=document.getElementById('term');
+  var lines=[
+    "$ keyide run main.js",
+    "[KeyIDE] Node v14.20.0 listo",
+    "Hola, Andrés — desde KeyIDE",
+    "✔ fin de la ejecución",
+    "$ git commit -m 'listo'  →  1 file changed",
+    "$ _"
+  ];
+  var i=0,j=0,cur='';
+  function step(){
+    if(i>=lines.length){ setTimeout(function(){ el.innerHTML=''; i=0; j=0; cur=''; step(); },2600); return; }
+    var L=lines[i];
+    if(j<=L.length){ cur=L.slice(0,j); j++; }
+    else { i++; j=0; cur=''; setTimeout(step,420); return; }
+    el.innerHTML=cur.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'<span class="cursor"></span>';
+    setTimeout(step, L.charAt(0)==='$'?48:22);
+  }
+  step();
+})();
+
+/* ---------- contadores ---------- */
+(function(){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return; io.unobserve(e.target);
+      var b=e.target, n=+b.dataset.count, i=0;
+      var t=setInterval(function(){ i+=Math.max(1,Math.round(n/24)); if(i>=n){i=n;clearInterval(t);} b.textContent=i; },40);
+    });
+  },{threshold:.4});
+  document.querySelectorAll('[data-count]').forEach(function(e){ io.observe(e); });
+})();
+
+/* ---------- capturas ---------- */
+(function(){
+  var shots=[
+    ["screenshots/01-editor.jpg","Editor con pestañas"],
+    ["screenshots/02-split-preview.jpg","Split + vista previa"],
+    ["screenshots/03-teclas.jpg","Barra de símbolos"],
+    ["screenshots/04-explorador-saf.jpg","Explorador (SAF)"],
+    ["screenshots/05-terminal.jpg","Terminal"],
+    ["screenshots/06-git.jpg","Control de versiones"],
+    ["screenshots/07-copiloto.jpg","Copiloto IA"]
+  ];
+  var track=document.getElementById('track'), dots=document.getElementById('dots');
+  shots.forEach(function(s,i){
+    var d=document.createElement('div'); d.className='phone';
+    var sc=document.createElement('div'); sc.className='screen';
+    var im=document.createElement('img'); im.src=s[0]; im.alt=s[1]; im.loading='lazy';
+    sc.appendChild(im); d.appendChild(sc);
+    var cap=document.createElement('div'); cap.className='cap'; cap.textContent=s[1]; d.appendChild(cap);
+    track.appendChild(d);
+    var b=document.createElement('button'); b.className='dot-nav'+(i===0?' on':''); b.setAttribute('aria-label',s[1]);
+    b.onclick=function(){ track.scrollTo({left:d.offsetLeft-track.offsetLeft-8,behavior:'smooth'}); };
+    dots.appendChild(b);
+  });
+  var io=new IntersectionObserver(function(){}, {root:track});
+  function sync(){
+    var best=0,min=1e9;
+    Array.prototype.forEach.call(track.children,function(ch,i){
+      var d=Math.abs(ch.offsetLeft-track.offsetLeft-track.scrollLeft);
+      if(d<min){min=d;best=i;}
+    });
+    Array.prototype.forEach.call(dots.children,function(x,i){ x.classList.toggle('on',i===best); });
+  }
+  track.addEventListener('scroll',function(){ clearTimeout(track._t); track._t=setTimeout(sync,80); });
+  setInterval(function(){
+    if(document.hidden) return;
+    var nxt=(Array.prototype.indexOf.call(track.children, null), 0);
+    var cur=0; Array.prototype.forEach.call(dots.children,function(x,i){ if(x.classList.contains('on')) cur=i; });
+    var idx=(cur+1)%track.children.length;
+    track.scrollTo({left:track.children[idx].offsetLeft-track.offsetLeft-8,behavior:'smooth'});
+  },4200);
+})();
+
+/* ---------- changelog ---------- */
+(function(){
+  var data=[
+    ["0.19.0","2026-09-21",["Compilar/Build on-device: checks .py/.js, npm install/run y build.sh."]],
+    ["0.18.0","2026-09-20",["Node.js REAL embebido (nodejs-mobile) + motor V8/Node seleccionable con fallback."]],
+    ["0.17.0","2026-09-20",["i18n cerrada al 100%: paleta de comandos y diálogos ES/EN."]],
+    ["0.16.0","2026-09-20",["Depurador de Python (sys.settrace): puntos de parada + traza."]],
+    ["0.15.0","2026-09-20",["Depurador de JavaScript: puntos de parada en el margen + traza."]],
+    ["0.14.0","2026-09-20",["Terminal con PTY real (NDK/JNI) + fallback a shell persistente."]],
+    ["0.13.0","2026-09-20",["i18n ES/EN y selector de idioma."]],
+    ["0.12.0","2026-09-20",["Tema global de la app (oscuro/claro/sistema) y tests unitarios."]],
+    ["0.11.0","2026-09-20",["LSP-lite (hover, referencias, renombrar), formateo y snippets; Git sobre la carpeta activa."]],
+    ["0.10.0","2026-09-20",["Node-lite (require local) e Ir a definición."]],
+    ["0.7–0.9","2026-09-20",["SAF, tema/sesión, terminal persistente, web y release firmado."]],
+    ["0.1–0.6","2026-09-20",["Esqueleto, editor, preview, Python/JS reales, JGit y pip."]]
+  ];
+  var tl=document.getElementById('tl');
+  data.forEach(function(d){
+    var w=document.createElement('div'); w.className='tl';
+    var h=document.createElement('h4'); h.innerHTML='v'+d[0]+' <small>— '+d[1]+'</small>';
+    var u=document.createElement('ul');
+    d[2].forEach(function(x){ var li=document.createElement('li'); li.innerHTML=x; u.appendChild(li); });
+    w.appendChild(h); w.appendChild(u); tl.appendChild(w);
+  });
+})();
+</script>
 </body>
 </html>
