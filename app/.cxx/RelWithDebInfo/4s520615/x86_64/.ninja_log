@@ -1,5 +1,0 @@
-# ninja log v5
-0	30	1789939439344056033	CMakeFiles/keyidepty.dir/pty.c.o	400f7be59d4f5a7
-31	47	1789939439360057293	/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/RelWithDebInfo/4s520615/obj/x86_64/libkeyidepty.so	5c6751d57378da2a
-1	290	1789941776116362773	CMakeFiles/keyidenode.dir/node_bridge.cpp.o	d6746783f4e1cfb1
-291	326	1789941776153365736	/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/RelWithDebInfo/4s520615/obj/x86_64/libkeyidenode.so	bf275b6cb2f03998

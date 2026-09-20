@@ -1,4 +1,0 @@
-/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/x86_64/CMakeFiles/keyidepty.dir
-/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/x86_64/CMakeFiles/keyidenode.dir
-/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/x86_64/CMakeFiles/edit_cache.dir
-/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/x86_64/CMakeFiles/rebuild_cache.dir
