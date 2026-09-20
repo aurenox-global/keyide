@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">KeyIDE</string>
+
+    <!-- Navigation -->
+    <string name="nav_files">Files</string>
+    <string name="nav_keys">Keys</string>
+    <string name="nav_run">Run</string>
+    <string name="nav_git">Git</string>
+    <string name="nav_ai">AI</string>
+
+    <!-- Sheet titles -->
+    <string name="sheet_files">Project explorer</string>
+    <string name="sheet_terminal">Integrated terminal</string>
+    <string name="sheet_git">Version control</string>
+    <string name="sheet_ai">AI copilot</string>
+    <string name="sheet_settings">Copilot settings</string>
+    <string name="sheet_preview">Preview</string>
+    <string name="sheet_search">Search in project</string>
+    <string name="sheet_find">Find and replace</string>
+    <string name="explorer_prefix">Explorer</string>
+
+    <!-- Hints -->
+    <string name="hint_command">Type a command…</string>
+    <string name="hint_terminal">command…</string>
+    <string name="hint_prompt">Ask for code, explain or fix…</string>
+    <string name="hint_apikey">API key (empty for local model)</string>
+    <string name="hint_find">Find…</string>
+    <string name="hint_replace">Replace with…</string>
+    <string name="hint_project_search">Search in project…</string>
+
+    <!-- Actions -->
+    <string name="action_save">Save</string>
+    <string name="action_send">Send</string>
+    <string name="action_new_file">New file</string>
+    <string name="action_clone">Clone repo</string>
+    <string name="action_status">Status</string>
+    <string name="action_commit">Commit + Push</string>
+    <string name="action_init">Init repo</string>
+    <string name="action_open_palette">Command palette</string>
+    <string name="action_open_folder">Open folder…</string>
+    <string name="action_prev">Previous</string>
+    <string name="action_next">Next</string>
+    <string name="action_replace">Replace</string>
+    <string name="action_replace_all">All</string>
+    <string name="action_search">Search</string>
+    <string name="action_clear">Clear</string>
+
+    <!-- Explorer -->
+    <string name="btn_open_folder">Open folder</string>
+    <string name="btn_file">File</string>
+    <string name="btn_folder">Folder</string>
+
+    <!-- Git -->
+    <string name="git_msg">Commit message</string>
+    <string name="git_url">Remote URL (clone / push)</string>
+    <string name="git_user">Git user (email or login)</string>
+    <string name="git_token">Token (empty if not needed)</string>
+    <string name="git_clone_here">Clone here</string>
+    <string name="git_clear_output">Clear output</string>
+    <string name="git_log">Log</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+    <string name="git_commit">Commit</string>
+
+    <!-- Terminal -->
+    <string name="terminal_title">Persistent session · /system/bin/sh</string>
+
+    <!-- AI settings -->
+    <string name="set_provider">Provider</string>
+    <string name="set_endpoint">Base endpoint</string>
+    <string name="set_model">Model</string>
+    <string name="set_key">API key</string>
+    <string name="set_save">Save</string>
+    <string name="set_test">Test</string>
+
+    <!-- Empty / states -->
+    <string name="empty_no_matches">No matches.</string>
+    <string name="empty_type_something">Type something.</string>
+</resources>

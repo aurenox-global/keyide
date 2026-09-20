@@ -17,6 +17,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -96,6 +98,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Idioma (ES/EN/Sistema) ANTES de inflar la UI.
+        val prefLang = getSharedPreferences("keyide", MODE_PRIVATE).getString("app_language", "system") ?: "system"
+        val wantLocales = if (prefLang == "system") LocaleListCompat.getEmptyLocaleList()
+        else LocaleListCompat.forLanguageTags(prefLang)
+        if (AppCompatDelegate.getApplicationLocales() != wantLocales) {
+            AppCompatDelegate.setApplicationLocales(wantLocales)
+        }
 
         // Tema GLOBAL (oscuro/claro/sistema) ANTES de inflar la UI.
         val prefTheme = getSharedPreferences("keyide", MODE_PRIVATE).getString("app_theme", "dark") ?: "dark"
@@ -555,7 +565,7 @@ class MainActivity : AppCompatActivity() {
                     it.onNewFolder = { promptNewFolder() }
                     filesPanel = it
                 }
-                b.sheetTitle.text = "Explorador · " + (if (safMode) safStack.lastOrNull()?.name else internalStack.lastOrNull()?.name).orEmpty()
+                b.sheetTitle.text = getString(R.string.explorer_prefix) + " · " + (if (safMode) safStack.lastOrNull()?.name else internalStack.lastOrNull()?.name).orEmpty()
                 b.sheetContent.addView(panel, params)
                 refreshExplorer()
             }
@@ -582,12 +592,12 @@ class MainActivity : AppCompatActivity() {
             }
             SHEET_SETTINGS -> {
                 val panel = SettingsPanel(this, settings) { aiPanel = null; updateTitle() }
-                b.sheetTitle.text = "Ajustes del copiloto"
+                b.sheetTitle.text = getString(R.string.sheet_settings)
                 b.sheetContent.addView(panel, params)
             }
             SHEET_FIND -> {
                 val panel = findPanel ?: FindPanel(this, b.editor).also { findPanel = it }
-                b.sheetTitle.text = "Buscar y reemplazar"
+                b.sheetTitle.text = getString(R.string.sheet_find)
                 b.sheetContent.addView(panel, params)
             }
             SHEET_SEARCH -> {
@@ -596,7 +606,7 @@ class MainActivity : AppCompatActivity() {
                     search = { q -> searchInProject(q) },
                     onOpen = { hit -> openSearchResult(hit) }
                 ).also { searchPanel = it }
-                b.sheetTitle.text = "Buscar en el proyecto"
+                b.sheetTitle.text = getString(R.string.sheet_search)
                 b.sheetContent.addView(panel, params)
             }
         }
@@ -667,7 +677,7 @@ class MainActivity : AppCompatActivity() {
         b.sheetContent.addView(p, FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         ))
-        b.sheetTitle.text = "Vista previa"
+        b.sheetTitle.text = getString(R.string.sheet_preview)
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
@@ -796,6 +806,7 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd("Ver: Ajuste de línea (wrap)") { toggleWordWrap() },
             CommandPalette.Cmd("Ver: Tema del editor…") { showThemeDialog() },
             CommandPalette.Cmd("Ver: Tema de la app (oscuro/claro)…") { showAppThemeDialog() },
+            CommandPalette.Cmd("Ver: Idioma (Sistema / ES / EN)…") { showLanguageDialog() },
             CommandPalette.Cmd("Ver: Tamaño de fuente…") { showFontSizeDialog() },
             CommandPalette.Cmd("Edición: Ir a línea…") { goToLineDialog() },
             CommandPalette.Cmd("Ejecutar: fichero actual") { runCurrent() },
@@ -1026,6 +1037,19 @@ class MainActivity : AppCompatActivity() {
         } else {
             switchTo(settings.activeTab.coerceIn(0, docs.size - 1))
         }
+    }
+
+    private fun showLanguageDialog() {
+        val opts = arrayOf("Sistema", "Español", "English")
+        val cur = when (settings.appLanguage) { "es" -> 1; "en" -> 2; else -> 0 }
+        AlertDialog.Builder(this)
+            .setTitle("Idioma")
+            .setSingleChoiceItems(opts, cur) { dialog, which ->
+                settings.appLanguage = when (which) { 1 -> "es"; 2 -> "en"; else -> "system" }
+                dialog.dismiss()
+                recreate()
+            }
+            .show()
     }
 
     private fun showAppThemeDialog() {

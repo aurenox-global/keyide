@@ -18,6 +18,7 @@ import com.keyide.app.ai.AiClient
 import com.keyide.app.data.AiProviders
 import com.keyide.app.data.Settings
 import org.json.JSONArray
+import com.keyide.app.R
 import org.json.JSONObject
 
 /**
@@ -70,7 +71,7 @@ class SettingsPanel(
         keyField.apply {
             setText(settings.aiKey)
             setSingleLine(true)
-            hint = "API key (vacío para modelo local)"
+            hint = context.getString(R.string.hint_apikey)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         for (f in listOf(baseField, modelField, keyField)) {
@@ -91,23 +92,23 @@ class SettingsPanel(
             setPadding(0, (10 * d).toInt(), 0, 0)
         }
 
-        col.addView(label("Proveedor"))
+        col.addView(label(context.getString(R.string.set_provider)))
         col.addView(providerSpinner, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         col.addView(hint, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        col.addView(label("Endpoint base"))
+        col.addView(label(context.getString(R.string.set_endpoint)))
         col.addView(baseField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        col.addView(label("Modelo"))
+        col.addView(label(context.getString(R.string.set_model)))
         col.addView(modelField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        col.addView(label("API key"))
+        col.addView(label(context.getString(R.string.set_key)))
         col.addView(keyField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         val buttons = LinearLayout(context).apply { orientation = HORIZONTAL }
         buttons.addView(Button(context).apply {
-            text = "Guardar"
+            text = context.getString(R.string.set_save)
             setOnClickListener { save(); Toast.makeText(context, "Guardado", Toast.LENGTH_SHORT).show() }
         }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         buttons.addView(Button(context).apply {
-            text = "Probar"
+            text = context.getString(R.string.set_test)
             setOnClickListener { test() }
         }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         col.addView(buttons, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))

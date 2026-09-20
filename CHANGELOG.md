@@ -4,6 +4,20 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.13.0] — 2026-09-20
+
+### Añadido
+- **i18n (ES/EN)**: textos de la interfaz movidos a **recursos** (`values/strings.xml` +
+  `values-en/strings.xml`). Los paneles (explorador, terminal, Git, copiloto, ajustes,
+  búsqueda/reemplazo, títulos de hoja) ya usan `getString(...)`.
+- **Selector de idioma**: **Sistema / Español / English** (vía
+  `AppCompatDelegate.setApplicationLocales`), desde la paleta de comandos
+  (*Ver: Idioma (Sistema / ES / EN)…*).
+
+### Notas
+- Quedan textos por migrar (títulos de comandos de la paleta y diálogos largos) para
+  completar la i18n; se hará en la siguiente pasada.
+
 ## [0.12.0] — 2026-09-20
 
 ### Añadido

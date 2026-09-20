@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import com.keyide.app.R
 import com.keyide.app.files.WorkspaceRepo
 
 /**
@@ -37,12 +38,12 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
             setPadding(dp(12), dp(4), dp(6), dp(4))
         }
         val title = TextView(context).apply {
-            text = "Sesión persistente · /system/bin/sh"
+            text = context.getString(R.string.terminal_title)
             setTextColor(Ui.mut)
             textSize = 11f
         }
         val clear = Button(context).apply {
-            text = "Limpiar"
+            text = context.getString(R.string.action_clear)
             textSize = 11f
             isAllCaps = false
             setOnClickListener { log.text = "" }
@@ -61,7 +62,7 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
         ))
 
         input.apply {
-            hint = "\$ comando…"
+            hint = "\$ " + context.getString(R.string.hint_terminal)
             typeface = Typeface.MONOSPACE
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))

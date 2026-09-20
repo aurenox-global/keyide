@@ -1,21 +1,34 @@
 <resources>
     <string name="app_name">KeyIDE</string>
+
+    <!-- Navegación -->
     <string name="nav_files">Ficheros</string>
     <string name="nav_keys">Teclas</string>
     <string name="nav_run">Run</string>
     <string name="nav_git">Git</string>
     <string name="nav_ai">AI</string>
 
+    <!-- Títulos de hojas -->
     <string name="sheet_files">Explorador de proyecto</string>
     <string name="sheet_terminal">Terminal integrado</string>
     <string name="sheet_git">Control de versiones</string>
     <string name="sheet_ai">Copiloto AI</string>
+    <string name="sheet_settings">Ajustes del copiloto</string>
+    <string name="sheet_preview">Vista previa</string>
+    <string name="sheet_search">Buscar en el proyecto</string>
+    <string name="sheet_find">Buscar y reemplazar</string>
+    <string name="explorer_prefix">Explorador</string>
 
+    <!-- Pistas -->
     <string name="hint_command">Escribe un comando…</string>
-    <string name="hint_terminal">Comando…</string>
+    <string name="hint_terminal">comando…</string>
     <string name="hint_prompt">Pide código, explica o arregla…</string>
-    <string name="hint_apikey">API key del copiloto</string>
+    <string name="hint_apikey">API key (vacío para modelo local)</string>
+    <string name="hint_find">Buscar…</string>
+    <string name="hint_replace">Reemplazar por…</string>
+    <string name="hint_project_search">Buscar en el proyecto…</string>
 
+    <!-- Acciones -->
     <string name="action_save">Guardar</string>
     <string name="action_send">Enviar</string>
     <string name="action_new_file">Nuevo fichero</string>
@@ -24,4 +37,43 @@
     <string name="action_commit">Commit + Push</string>
     <string name="action_init">Inicializar repo</string>
     <string name="action_open_palette">Paleta de comandos</string>
+    <string name="action_open_folder">Abrir carpeta…</string>
+    <string name="action_prev">Anterior</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_replace">Reemplazar</string>
+    <string name="action_replace_all">Todo</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_clear">Limpiar</string>
+
+    <!-- Explorador -->
+    <string name="btn_open_folder">Abrir carpeta</string>
+    <string name="btn_file">Fichero</string>
+    <string name="btn_folder">Carpeta</string>
+
+    <!-- Git -->
+    <string name="git_msg">Mensaje de commit</string>
+    <string name="git_url">URL del remoto (clone / push)</string>
+    <string name="git_user">Usuario Git (email o login)</string>
+    <string name="git_token">Token (vacío si no hace falta)</string>
+    <string name="git_clone_here">Clone aquí</string>
+    <string name="git_clear_output">Borrar salida</string>
+    <string name="git_log">Log</string>
+    <string name="git_pull">Pull</string>
+    <string name="git_push">Push</string>
+    <string name="git_commit">Commit</string>
+
+    <!-- Terminal -->
+    <string name="terminal_title">Sesión persistente · /system/bin/sh</string>
+
+    <!-- Ajustes IA -->
+    <string name="set_provider">Proveedor</string>
+    <string name="set_endpoint">Endpoint base</string>
+    <string name="set_model">Modelo</string>
+    <string name="set_key">API key</string>
+    <string name="set_save">Guardar</string>
+    <string name="set_test">Probar</string>
+
+    <!-- Vacíos / estados -->
+    <string name="empty_no_matches">Sin coincidencias.</string>
+    <string name="empty_type_something">Escribe algo.</string>
 </resources>

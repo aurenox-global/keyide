@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.keyide.app.R
 import com.keyide.app.editor.CodeEditorView
 
 /**
@@ -50,8 +51,8 @@ class FindPanel(context: Context, private val editor: CodeEditorView) : LinearLa
             setSingleLine(true)
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
-        query.hint = "Buscar…"
-        replace.hint = "Reemplazar por…"
+        query.hint = context.getString(R.string.hint_find)
+        replace.hint = context.getString(R.string.hint_replace)
 
         fun btn(label: String, onClick: () -> Unit) = Button(context).apply {
             text = label
@@ -77,10 +78,10 @@ class FindPanel(context: Context, private val editor: CodeEditorView) : LinearLa
         row2.addView(replace, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
 
         val row3 = LinearLayout(context).apply { orientation = HORIZONTAL; setPadding(dp(8), dp(2), dp(8), dp(2)) }
-        row3.addView(btn("\u25C0 Anterior") { prev() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        row3.addView(btn("Siguiente \u25B6") { next() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        row3.addView(btn("Reemplazar") { replaceCurrent() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        row3.addView(btn("Todo") { replaceAll() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row3.addView(btn("\u25C0 " + context.getString(R.string.action_prev)) { prev() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row3.addView(btn(context.getString(R.string.action_next) + " \u25B6") { next() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row3.addView(btn(context.getString(R.string.action_replace)) { replaceCurrent() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row3.addView(btn(context.getString(R.string.action_replace_all)) { replaceAll() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
 
         status.apply {
             setTextColor(Ui.mut)

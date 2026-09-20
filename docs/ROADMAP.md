@@ -12,7 +12,7 @@
 - [ ] **LSP real** por proceso (hover semántico, referencias exactas, renombrar en proyecto).
 - [ ] **PTY real** (control de trabajos, apps de pantalla completa).
 - [x] **Temas claros globales** (oscuro/claro/sistema) y **tests unitarios**.
-- [ ] **i18n (ES/EN)**: pasar los textos fijos a recursos.
+- [x] **i18n (ES/EN)** + selector de idioma (quedan algunos textos por migrar).
 - [ ] **Debugger on-device** con breakpoints.
 - [ ] **Node.js real** (npm / módulos nativos).
 - [ ] **Build on-device** (Gradle/Kotlin).

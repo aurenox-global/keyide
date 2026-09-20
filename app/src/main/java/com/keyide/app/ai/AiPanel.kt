@@ -14,6 +14,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.keyide.app.data.Settings
 import org.json.JSONArray
+import com.keyide.app.R
 import org.json.JSONObject
 
 /** Hoja "AI": chat con el copiloto, con el código actual como contexto. */
@@ -43,7 +44,7 @@ class AiPanel(context: Context, private val settings: Settings) : LinearLayout(c
 
         val row = LinearLayout(context).apply { orientation = HORIZONTAL }
         input.apply {
-            hint = "Pide código, explica o arregla…"
+            hint = context.getString(R.string.hint_prompt)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
             setBackgroundColor(Ui.panel)
@@ -53,7 +54,7 @@ class AiPanel(context: Context, private val settings: Settings) : LinearLayout(c
         }
         row.addView(input, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         row.addView(Button(context).apply {
-            text = "Enviar"
+            text = context.getString(R.string.action_send)
             setOnClickListener { send() }
         }, LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 

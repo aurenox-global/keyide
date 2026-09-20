@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import com.keyide.app.R
 import com.keyide.app.files.Entry
 
 /** Coincidencia encontrada en el proyecto. */
@@ -42,7 +43,7 @@ class ProjectSearchPanel(
             setPadding(dp(8), dp(6), dp(8), dp(4))
         }
         query.apply {
-            hint = "Buscar en el proyecto…"
+            hint = context.getString(R.string.hint_project_search)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
             setBackgroundColor(Ui.panel)
@@ -51,7 +52,7 @@ class ProjectSearchPanel(
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         val go = Button(context).apply {
-            text = "Buscar"
+            text = context.getString(R.string.action_search)
             setOnClickListener { runSearch() }
         }
         top.addView(query, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
@@ -85,10 +86,10 @@ class ProjectSearchPanel(
     private fun runSearch() {
         val q = query.text?.toString().orEmpty()
         results.removeAllViews()
-        if (q.trim().isEmpty()) { info.text = "Escribe algo."; return }
+        if (q.trim().isEmpty()) { info.text = context.getString(R.string.empty_type_something); return }
         info.text = "Buscando…"
         val hits = search(q.trim())
-        info.text = if (hits.isEmpty()) "Sin coincidencias." else "${hits.size} coincidencias"
+        info.text = if (hits.isEmpty()) context.getString(R.string.empty_no_matches) else "${hits.size} coincidencias"
         val d = resources.displayMetrics.density
         for (h in hits) {
             val row = LinearLayout(context).apply {

@@ -41,6 +41,10 @@ class Settings(context: Context) {
         get() = sp.getString("app_theme", "dark") ?: "dark"
         set(v) = sp.edit().putString("app_theme", v).apply()
 
+    var appLanguage: String
+        get() = sp.getString("app_language", "system") ?: "system"
+        set(v) = sp.edit().putString("app_language", v).apply()
+
     var editorTheme: String
         get() = sp.getString("editor_theme", "onedark") ?: "onedark"
         set(v) = sp.edit().putString("editor_theme", v).apply()

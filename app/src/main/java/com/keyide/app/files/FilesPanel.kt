@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.keyide.app.R
 
 /**
  * Hoja "Ficheros": explorador tipo gestor de archivos que funciona tanto con
@@ -61,9 +62,9 @@ class FilesPanel(context: Context) : LinearLayout(context) {
             orientation = HORIZONTAL
             setPadding(dp(8), 0, dp(8), dp(6))
         }
-        actions.addView(actionButton(context, "\uD83D\uDCC2 Abrir carpeta") { onPickFolder?.invoke() })
-        actions.addView(actionButton(context, "\uFF0B Fichero") { onNewFile?.invoke() })
-        actions.addView(actionButton(context, "\uD83D\uDCC1 Carpeta") { onNewFolder?.invoke() })
+        actions.addView(actionButton(context, "\uD83D\uDCC2 " + context.getString(R.string.btn_open_folder)) { onPickFolder?.invoke() })
+        actions.addView(actionButton(context, "\uFF0B " + context.getString(R.string.btn_file)) { onNewFile?.invoke() })
+        actions.addView(actionButton(context, "\uD83D\uDCC1 " + context.getString(R.string.btn_folder)) { onNewFolder?.invoke() })
 
         rv.apply {
             layoutManager = LinearLayoutManager(context)

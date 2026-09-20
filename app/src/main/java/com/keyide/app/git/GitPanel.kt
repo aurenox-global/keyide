@@ -15,6 +15,7 @@ import android.widget.TextView
 import com.keyide.app.data.Settings
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
+import com.keyide.app.R
 import java.io.File
 
 /**
@@ -69,7 +70,7 @@ class GitPanel(
             }
 
         msgField.apply {
-            hint = "Mensaje de commit"
+            hint = context.getString(R.string.git_msg)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
             setBackgroundColor(Ui.panel)
@@ -77,7 +78,7 @@ class GitPanel(
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         urlField.apply {
-            hint = "URL del remoto (clone / push)"
+            hint = context.getString(R.string.git_url)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
             setBackgroundColor(Ui.panel)
@@ -86,7 +87,7 @@ class GitPanel(
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         userField.apply {
-            hint = "Usuario Git (email o login)"
+            hint = context.getString(R.string.git_user)
             setText(settings.gitUserName)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
@@ -95,7 +96,7 @@ class GitPanel(
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         tokenField.apply {
-            hint = "Token (vacío si no hace falta)"
+            hint = context.getString(R.string.git_token)
             setText(settings.gitToken)
             setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
@@ -117,19 +118,19 @@ class GitPanel(
 
         addView(msgField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(row(
-            button("Estado") { status() },
-            button("Init") { initRepo() },
-            button("Commit") { commit() }
+            button(context.getString(R.string.action_status)) { status() },
+            button(context.getString(R.string.action_init)) { initRepo() },
+            button(context.getString(R.string.git_commit)) { commit() }
         ), LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(row(
-            button("Log") { log() },
-            button("Pull") { pull() },
-            button("Push") { push() }
+            button(context.getString(R.string.git_log)) { log() },
+            button(context.getString(R.string.git_pull)) { pull() },
+            button(context.getString(R.string.git_push)) { push() }
         ), LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(urlField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(row(
-            button("Clone aquí") { clone() },
-            button("Borrar salida") { out.text = "" }
+            button(context.getString(R.string.git_clone_here)) { clone() },
+            button(context.getString(R.string.git_clear_output)) { out.text = "" }
         ), LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(userField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         addView(tokenField, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
