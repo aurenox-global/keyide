@@ -1,12 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Tema OSCURO (por defecto) -->
     <style name="Theme.KeyIDE" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">#0D1117</item>
         <item name="colorSurface">@color/panel</item>
         <item name="colorOnSurface">@color/fg</item>
+        <item name="colorSurfaceVariant">@color/panel2</item>
+        <item name="colorOutline">@color/line</item>
         <item name="android:windowBackground">@color/bg</item>
         <item name="android:statusBarColor">@color/bg</item>
         <item name="android:navigationBarColor">@color/panel</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+    <!-- Tema CLARO -->
+    <style name="Theme.KeyIDE.Light" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">#0969DA</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSurface">#F6F8FA</item>
+        <item name="colorOnSurface">#1F2328</item>
+        <item name="colorSurfaceVariant">#EAEEF2</item>
+        <item name="colorOutline">#D0D7DE</item>
+        <item name="android:windowBackground">#FFFFFF</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:navigationBarColor">#F6F8FA</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 </resources>

@@ -1,5 +1,6 @@
 package com.keyide.app.preview
 
+import com.keyide.app.ui.Ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
@@ -29,11 +30,11 @@ class PreviewPanel(context: Context) : LinearLayout(context) {
         val bar = LinearLayout(context).apply {
             orientation = HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             setPadding((12 * d).toInt(), (4 * d).toInt(), (6 * d).toInt(), (4 * d).toInt())
         }
         label.apply {
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
         }
         bar.addView(label, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))

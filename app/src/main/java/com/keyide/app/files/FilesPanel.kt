@@ -1,5 +1,6 @@
 package com.keyide.app.files
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
@@ -28,7 +29,7 @@ class FilesPanel(context: Context) : LinearLayout(context) {
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#161B22"))
+        setBackgroundColor(Ui.panel)
         val d = resources.displayMetrics.density
         fun dp(v: Int) = (v * d).toInt()
 
@@ -40,7 +41,7 @@ class FilesPanel(context: Context) : LinearLayout(context) {
         }
         upButton.apply {
             text = "\u2B06"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             textSize = 16f
             gravity = Gravity.CENTER
             setBackgroundResource(com.keyide.app.R.drawable.bg_key)
@@ -48,7 +49,7 @@ class FilesPanel(context: Context) : LinearLayout(context) {
             setOnClickListener { onUp?.invoke() }
         }
         pathLabel.apply {
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
             maxLines = 1
             setPadding(dp(10), 0, dp(6), 0)
@@ -79,7 +80,7 @@ class FilesPanel(context: Context) : LinearLayout(context) {
         val d = ctx.resources.displayMetrics.density
         return TextView(ctx).apply {
             text = label
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             textSize = 11.5f
             gravity = Gravity.CENTER
             setBackgroundResource(com.keyide.app.R.drawable.bg_key)

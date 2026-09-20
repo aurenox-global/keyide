@@ -62,6 +62,7 @@
 - Nota: no es un PTY (sin control de trabajos ni apps de pantalla completa).
 
 ## Apariencia y sesión
+- **Tema de la app**: Oscuro, Claro o Sistema (afecta a todos los paneles).
 - **Temas del editor**: One Dark, Monokai y Claro (GitHub).
 - **Tamaño de fuente** 10–24sp.
 - **Persistencia**: se restauran las pestañas abiertas y la activa al reabrir.

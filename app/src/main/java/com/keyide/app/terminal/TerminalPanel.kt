@@ -1,5 +1,6 @@
 package com.keyide.app.terminal
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -26,7 +27,7 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#0D1117"))
+        setBackgroundColor(Ui.bg)
         val d = resources.displayMetrics.density
         fun dp(v: Int) = (v * d).toInt()
 
@@ -37,7 +38,7 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
         }
         val title = TextView(context).apply {
             text = "Sesión persistente · /system/bin/sh"
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 11f
         }
         val clear = Button(context).apply {
@@ -62,9 +63,9 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
         input.apply {
             hint = "\$ comando…"
             typeface = Typeface.MONOSPACE
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 13f
             setPadding(dp(12), dp(10), dp(12), dp(10))
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS

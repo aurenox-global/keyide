@@ -1,5 +1,6 @@
 package com.keyide.app.edit
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.text.InputType
@@ -31,7 +32,7 @@ class ProjectSearchPanel(
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#0D1117"))
+        setBackgroundColor(Ui.bg)
         val d = resources.displayMetrics.density
         fun dp(v: Int) = (v * d).toInt()
 
@@ -42,9 +43,9 @@ class ProjectSearchPanel(
         }
         query.apply {
             hint = "Buscar en el proyecto…"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 13f
             inputType = InputType.TYPE_CLASS_TEXT
             setPadding(dp(12), dp(10), dp(12), dp(10))
@@ -57,7 +58,7 @@ class ProjectSearchPanel(
         top.addView(go, LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         info.apply {
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 11.5f
             setPadding(dp(12), 0, dp(12), dp(4))
         }
@@ -97,7 +98,7 @@ class ProjectSearchPanel(
             }
             val title = TextView(context).apply {
                 text = "${h.name}:${h.line}"
-                setTextColor(Color.parseColor("#58A6FF"))
+                setTextColor(Ui.acc)
                 textSize = 12.5f
             }
             val preview = TextView(context).apply {

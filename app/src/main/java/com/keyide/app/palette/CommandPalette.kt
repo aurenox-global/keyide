@@ -1,5 +1,6 @@
 package com.keyide.app.palette
 
+import com.keyide.app.ui.Ui
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
@@ -25,7 +26,7 @@ object CommandPalette {
         }
         val input = EditText(ctx).apply {
             hint = "Escribe un comando…"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
             setSingleLine(true)
         }

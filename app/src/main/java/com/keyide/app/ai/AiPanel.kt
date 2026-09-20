@@ -1,5 +1,6 @@
 package com.keyide.app.ai
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -27,7 +28,7 @@ class AiPanel(context: Context, private val settings: Settings) : LinearLayout(c
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#0D1117"))
+        setBackgroundColor(Ui.bg)
         val d = resources.displayMetrics.density
 
         history.put(JSONObject().put("role", "system").put("content", SYSTEM_PROMPT))
@@ -43,9 +44,9 @@ class AiPanel(context: Context, private val settings: Settings) : LinearLayout(c
         val row = LinearLayout(context).apply { orientation = HORIZONTAL }
         input.apply {
             hint = "Pide código, explica o arregla…"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 13f
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             setPadding((12 * d).toInt(), (10 * d).toInt(), (12 * d).toInt(), (10 * d).toInt())

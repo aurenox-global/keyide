@@ -1,5 +1,6 @@
 package com.keyide.app.edit
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
@@ -34,7 +35,7 @@ class FindPanel(context: Context, private val editor: CodeEditorView) : LinearLa
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#161B22"))
+        setBackgroundColor(Ui.panel)
         val d = resources.displayMetrics.density
         fun dp(v: Int) = (v * d).toInt()
 
@@ -42,9 +43,9 @@ class FindPanel(context: Context, private val editor: CodeEditorView) : LinearLa
 
         fun field(hint: String) = EditText(context).apply {
             this.hint = hint
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#0D1117"))
+            setBackgroundColor(Ui.bg)
             textSize = 13f
             setSingleLine(true)
             setPadding(dp(12), dp(10), dp(12), dp(10))
@@ -82,7 +83,7 @@ class FindPanel(context: Context, private val editor: CodeEditorView) : LinearLa
         row3.addView(btn("Todo") { replaceAll() }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
 
         status.apply {
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
             gravity = Gravity.START
             setPadding(dp(12), dp(6), dp(12), dp(8))

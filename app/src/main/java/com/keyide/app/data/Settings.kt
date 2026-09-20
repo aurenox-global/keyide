@@ -37,6 +37,10 @@ class Settings(context: Context) {
         get() = sp.getBoolean("word_wrap", false)
         set(v) = sp.edit().putBoolean("word_wrap", v).apply()
 
+    var appTheme: String
+        get() = sp.getString("app_theme", "dark") ?: "dark"
+        set(v) = sp.edit().putString("app_theme", v).apply()
+
     var editorTheme: String
         get() = sp.getString("editor_theme", "onedark") ?: "onedark"
         set(v) = sp.edit().putString("editor_theme", v).apply()

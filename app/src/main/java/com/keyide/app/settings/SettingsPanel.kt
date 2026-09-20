@@ -1,5 +1,6 @@
 package com.keyide.app.settings
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.text.InputType
@@ -40,12 +41,12 @@ class SettingsPanel(
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#161B22"))
+        setBackgroundColor(Ui.panel)
         val d = resources.displayMetrics.density
 
         fun label(t: String) = TextView(context).apply {
             text = t
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
             setPadding(0, (10 * d).toInt(), 0, (2 * d).toInt())
         }
@@ -73,9 +74,9 @@ class SettingsPanel(
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         for (f in listOf(baseField, modelField, keyField)) {
-            f.setTextColor(Color.parseColor("#E6EDF3"))
+            f.setTextColor(Ui.fg)
             f.setHintTextColor(Color.parseColor("#6E7681"))
-            f.setBackgroundColor(Color.parseColor("#0D1117"))
+            f.setBackgroundColor(Ui.bg)
             f.setPadding((10 * d).toInt(), (10 * d).toInt(), (10 * d).toInt(), (10 * d).toInt())
         }
 
@@ -85,7 +86,7 @@ class SettingsPanel(
             setPadding(0, (6 * d).toInt(), 0, 0)
         }
         result.apply {
-            setTextColor(Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
             setPadding(0, (10 * d).toInt(), 0, 0)
         }

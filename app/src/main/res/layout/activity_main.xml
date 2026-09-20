@@ -6,7 +6,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:id="@+id/rootColumn"
@@ -18,17 +18,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/bg"
+            android:background="?android:attr/colorBackground"
             app:title="@string/app_name"
-            app:titleTextColor="@color/fg"
-            app:subtitleTextColor="@color/muted"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:subtitleTextColor="?android:attr/textColorSecondary"
             app:contentInsetStartWithNavigation="8dp" />
 
         <HorizontalScrollView
             android:id="@+id/tabsBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg"
+            android:background="?android:attr/colorBackground"
             android:scrollbars="none"
             android:visibility="gone">
 
@@ -68,7 +68,7 @@
             android:id="@+id/keysBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/panel"
+            android:background="?attr/colorSurface"
             android:scrollbars="none"
             android:visibility="gone">
 
@@ -87,10 +87,10 @@
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/panel"
+            android:background="?attr/colorSurface"
             app:labelVisibilityMode="labeled"
-            app:itemIconTint="@color/fg"
-            app:itemTextColor="@color/fg"
+            app:itemIconTint="?attr/colorOnSurface"
+            app:itemTextColor="?attr/colorOnSurface"
             app:menu="@menu/bottom_nav" />
     </LinearLayout>
 
@@ -127,7 +127,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/fg"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />

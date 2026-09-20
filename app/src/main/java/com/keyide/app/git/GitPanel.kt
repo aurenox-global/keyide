@@ -1,5 +1,6 @@
 package com.keyide.app.git
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -41,7 +42,7 @@ class GitPanel(
 
     init {
         orientation = VERTICAL
-        setBackgroundColor(Color.parseColor("#0D1117"))
+        setBackgroundColor(Ui.bg)
 
         fun button(label: String, onClick: () -> Unit): Button = Button(context).apply {
             text = label
@@ -59,9 +60,9 @@ class GitPanel(
         fun field(hint: String, type: Int = InputType.TYPE_CLASS_TEXT): EditText =
             EditText(context).apply {
                 this.hint = hint
-                setTextColor(Color.parseColor("#E6EDF3"))
+                setTextColor(Ui.fg)
                 setHintTextColor(Color.parseColor("#6E7681"))
-                setBackgroundColor(Color.parseColor("#161B22"))
+                setBackgroundColor(Ui.panel)
                 textSize = 12f
                 inputType = type
                 setPadding(dp(12), dp(10), dp(12), dp(10))
@@ -69,17 +70,17 @@ class GitPanel(
 
         msgField.apply {
             hint = "Mensaje de commit"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 12f
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         urlField.apply {
             hint = "URL del remoto (clone / push)"
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 12f
             inputType = InputType.TYPE_TEXT_VARIATION_URI
             setPadding(dp(12), dp(10), dp(12), dp(10))
@@ -87,18 +88,18 @@ class GitPanel(
         userField.apply {
             hint = "Usuario Git (email o login)"
             setText(settings.gitUserName)
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 12f
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
         tokenField.apply {
             hint = "Token (vacío si no hace falta)"
             setText(settings.gitToken)
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             setHintTextColor(Color.parseColor("#6E7681"))
-            setBackgroundColor(Color.parseColor("#161B22"))
+            setBackgroundColor(Ui.panel)
             textSize = 12f
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             setPadding(dp(12), dp(10), dp(12), dp(10))

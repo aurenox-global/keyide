@@ -1,5 +1,6 @@
 package com.keyide.app.files
 
+import com.keyide.app.ui.Ui
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
@@ -60,7 +61,7 @@ class EntryAdapter(private val onClick: (Entry) -> Unit) : RecyclerView.Adapter<
         }
         val icon = TextView(ctx).apply { textSize = 16f }
         val name = TextView(ctx).apply {
-            setTextColor(Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             textSize = 14f
             setPadding((10 * d).toInt(), (12 * d).toInt(), 0, (12 * d).toInt())
         }

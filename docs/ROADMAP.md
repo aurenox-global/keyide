@@ -11,10 +11,11 @@
 - [x] **Formateo de documento y snippets**.
 - [ ] **LSP real** por proceso (hover semántico, referencias exactas, renombrar en proyecto).
 - [ ] **PTY real** (control de trabajos, apps de pantalla completa).
+- [x] **Temas claros globales** (oscuro/claro/sistema) y **tests unitarios**.
+- [ ] **i18n (ES/EN)**: pasar los textos fijos a recursos.
 - [ ] **Debugger on-device** con breakpoints.
 - [ ] **Node.js real** (npm / módulos nativos).
 - [ ] **Build on-device** (Gradle/Kotlin).
-- [ ] **Temas claros globales, i18n y tests**.
 - [ ] **Release firmado + subir a GitHub** (repo, CI, capturas).
 
 ## Medio plazo

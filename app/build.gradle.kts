@@ -30,8 +30,8 @@ android {
         applicationId = "com.keyide.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 12
-        versionName = "0.11.0"
+        versionCode = 13
+        versionName = "0.12.0"
         resourceConfigurations += listOf("es", "en")
 
         ndk {
@@ -66,6 +66,7 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    testImplementation("junit:junit:4.13.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

@@ -4,6 +4,19 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.12.0] — 2026-09-20
+
+### Añadido
+- **Tema global de la app**: **Oscuro / Claro / Sistema**. Nueva paleta global (`ui/Ui.kt`) +
+  estilo `Theme.KeyIDE.Light`; **todos los paneles** (editor, explorador, terminal, Git, IA,
+  ajustes, búsqueda, paleta, previsualización) migrados de colores fijos a la paleta.
+  Selector en la paleta de comandos: *Ver: Tema de la app (oscuro/claro)…*.
+- **Tests unitarios** (JUnit) de la lógica pura: Markdown, Snippets, proveedores de IA y
+  temas del editor (`app/src/test/java/com/keyide/app/CoreTest.kt`).
+
+### Notas
+- Queda pendiente la **i18n (ES/EN)**: es una pasada mecánica de strings (próximo paso).
+
 ## [0.11.0] — 2026-09-20
 
 ### Añadido

@@ -1,5 +1,6 @@
 package com.keyide.app
 
+import com.keyide.app.ui.Ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -95,6 +96,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Tema GLOBAL (oscuro/claro/sistema) ANTES de inflar la UI.
+        val prefTheme = getSharedPreferences("keyide", MODE_PRIVATE).getString("app_theme", "dark") ?: "dark"
+        val sysDark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        val isLight = when (prefTheme) {
+            "light" -> true
+            "dark" -> false
+            else -> !sysDark
+        }
+        com.keyide.app.ui.Ui.applyTheme(isLight)
+        setTheme(if (isLight) R.style.Theme_KeyIDE_Light else R.style.Theme_KeyIDE)
+
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
 
@@ -384,14 +397,14 @@ class MainActivity : AppCompatActivity() {
         }
         val name = TextView(this).apply {
             text = d.name + (if (d.modified) " \u25CF" else "")
-            setTextColor(android.graphics.Color.parseColor("#E6EDF3"))
+            setTextColor(Ui.fg)
             textSize = 12f
             typeface = android.graphics.Typeface.MONOSPACE
             setOnClickListener { switchTo(index) }
         }
         val close = TextView(this).apply {
             text = "\u2715"
-            setTextColor(android.graphics.Color.parseColor("#8B949E"))
+            setTextColor(Ui.mut)
             textSize = 12f
             setPadding(dp(8), 0, dp(4), 0)
             setOnClickListener { closeTab(index) }
@@ -481,7 +494,7 @@ class MainActivity : AppCompatActivity() {
         for (s in symbols) {
             val key = TextView(this).apply {
                 text = if (s == "TAB") "⇥" else s
-                setTextColor(android.graphics.Color.parseColor("#E6EDF3"))
+                setTextColor(Ui.fg)
                 textSize = 15f
                 typeface = android.graphics.Typeface.MONOSPACE
                 gravity = android.view.Gravity.CENTER
@@ -782,6 +795,7 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd("Ver: Barra de símbolos") { toggleKeys() },
             CommandPalette.Cmd("Ver: Ajuste de línea (wrap)") { toggleWordWrap() },
             CommandPalette.Cmd("Ver: Tema del editor…") { showThemeDialog() },
+            CommandPalette.Cmd("Ver: Tema de la app (oscuro/claro)…") { showAppThemeDialog() },
             CommandPalette.Cmd("Ver: Tamaño de fuente…") { showFontSizeDialog() },
             CommandPalette.Cmd("Edición: Ir a línea…") { goToLineDialog() },
             CommandPalette.Cmd("Ejecutar: fichero actual") { runCurrent() },
@@ -1012,6 +1026,19 @@ class MainActivity : AppCompatActivity() {
         } else {
             switchTo(settings.activeTab.coerceIn(0, docs.size - 1))
         }
+    }
+
+    private fun showAppThemeDialog() {
+        val opts = arrayOf("Oscuro", "Claro", "Sistema")
+        val cur = when (settings.appTheme) { "light" -> 1; "system" -> 2; else -> 0 }
+        AlertDialog.Builder(this)
+            .setTitle("Tema de la app")
+            .setSingleChoiceItems(opts, cur) { dialog, which ->
+                settings.appTheme = when (which) { 1 -> "light"; 2 -> "system"; else -> "dark" }
+                dialog.dismiss()
+                recreate()
+            }
+            .show()
     }
 
     private fun showThemeDialog() {
