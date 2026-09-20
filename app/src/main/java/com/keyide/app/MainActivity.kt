@@ -4,6 +4,7 @@ import com.keyide.app.ui.Ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.KeyEvent
@@ -156,16 +157,34 @@ class MainActivity : AppCompatActivity() {
 
     // ── Insets ────────────────────────────────────────────────────────────
 
+    private var keysBarWasVisible = false
+
+    /**
+     * Insets. OJO:
+     *  - API 30+: el sistema NO redimensiona → controlamos el teclado con los insets.
+     *  - API < 30: `adjustResize` YA encoge la ventana → si sumásemos el inset del teclado
+     *    otra vez (doble ajuste) las barras se iban demasiado arriba y tapaban el editor.
+     * Con el teclado abierto, ocultamos la barra de símbolos para dar espacio al código.
+     */
     private fun applyInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(b.root) { _, insets ->
             val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-            val bottom = maxOf(sys.bottom, ime.bottom)
-            // La barra inferior (teclas + nav) queda SIEMPRE pegada encima del teclado,
-            // sin estirarse: desplazamos TODA la columna (padding del contenedor),
-            // NO metemos el inset como padding dentro de la barra.
+            val useIme = Build.VERSION.SDK_INT >= 30
+            val bottom = if (useIme) maxOf(sys.bottom, ime.bottom) else sys.bottom
             b.rootColumn.setPadding(0, sys.top, 0, bottom)
             b.sheet.setPadding(0, 0, 0, bottom)
+
+            val imeVisible = ime.bottom > 0 && ime.bottom > sys.bottom
+            if (imeVisible) {
+                if (b.keysBar.visibility == View.VISIBLE) {
+                    keysBarWasVisible = true
+                    b.keysBar.visibility = View.GONE
+                }
+            } else if (keysBarWasVisible) {
+                keysBarWasVisible = false
+                b.keysBar.visibility = View.VISIBLE
+            }
             insets
         }
         ViewCompat.requestApplyInsets(b.root)

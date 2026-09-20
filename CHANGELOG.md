@@ -4,6 +4,18 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.19.1] — 2026-09-21
+
+### Corregido
+- **Barra inferior con el teclado abierto (doble ajuste)**: en **Android < 15** el sistema ya
+  encoge la ventana (`adjustResize`) **y** además sumábamos el inset del teclado → las barras
+  se iban **demasiado arriba** y tapaban el editor. Ahora: en **API ≥ 30** usamos los *insets*
+  del teclado (el sistema no redimensiona); en **API < 30** confiamos en el redimensionado
+  nativo (sin doble ajuste). Resultado: la barra queda **pegada encima del teclado** sin
+  invadir el código.
+- Con el teclado abierto se **oculta la barra de símbolos** (es redundante) para dar más
+  espacio al código; se restaura al cerrarlo.
+
 ## [0.19.0] — 2026-09-21
 
 ### Añadido
