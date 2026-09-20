@@ -4,6 +4,20 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.14.0] — 2026-09-20
+
+### Añadido
+- **Terminal con PTY REAL (experimental)**: código nativo (**NDK/JNI**, `libkeyidepty`)
+  que abre un pseudo-terminal (`posix_openpt` + `grantpt`/`unlockpt` + `fork` + `sh -i`).
+  Permite apps interactivas: control de trabajos, colores, `vim`/`htop`…
+  El tamaño se fija con `ioctl(TIOCSWINSZ)` (40×100) y se limpian las secuencias ANSI.
+- **Fallback automático**: si el PTY no está disponible, usa el shell persistente actual,
+  así el terminal nunca se queda sin funcionar. El título indica `PTY` o `Sesión persistente`.
+
+### Notas
+- El PTY lleva **fallback**, pero **no se ha podido probar en un dispositivo real**
+  (solo compila y empaqueta). Verificar en el móvil.
+
 ## [0.13.0] — 2026-09-20
 
 ### Añadido

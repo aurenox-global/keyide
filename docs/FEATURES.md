@@ -55,11 +55,11 @@
 - **Deshacer / Rehacer** (`↶ ↷` en la barra de símbolos, paleta o `Ctrl+Z`).
 
 ## Terminal
-- **Sesión persistente** sobre `/system/bin/sh`: el proceso se mantiene vivo, así que
-  `cd`, variables y estado **se conservan** entre comandos (a diferencia de ejecutar cada
-  comando por separado).
-- Botón *Limpiar*; la salida se vuelca en tiempo real.
-- Nota: no es un PTY (sin control de trabajos ni apps de pantalla completa).
+- **PTY real** (experimental, nativo): apps interactivas (control de trabajos, colores,
+  `vim`/`htop`). Tamaño 40×100, ANSI limpiado.
+- **Fallback**: si no hay PTY, **sesión persistente** sobre `/system/bin/sh` (el proceso vive,
+  así `cd`, variables y estado se conservan entre comandos).
+- Botón *Limpiar*; la salida se vuelca en tiempo real. El título indica si es PTY o shell.
 
 ## Apariencia y sesión
 - **Tema de la app**: Oscuro, Claro o Sistema (afecta a todos los paneles).

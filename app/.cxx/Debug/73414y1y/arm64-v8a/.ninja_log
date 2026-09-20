@@ -1,0 +1,3 @@
+# ninja log v5
+0	42	1789939424828912318	CMakeFiles/keyidepty.dir/pty.c.o	d85b35d7bb87eac8
+42	58	1789939424844913580	/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/Debug/73414y1y/obj/arm64-v8a/libkeyidepty.so	2283965179d7519c

@@ -24,7 +24,8 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
     private val log = TextView(context)
     private val input = EditText(context)
     private val scroll = ScrollView(context)
-    private val session = ShellSession(WorkspaceRepo.root(context))
+    private val cwd = WorkspaceRepo.root(context)
+    private var session: TerminalSession = ShellSession(cwd)
 
     init {
         orientation = VERTICAL
@@ -77,9 +78,21 @@ class TerminalPanel(context: Context) : LinearLayout(context) {
         addView(scroll, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         addView(input, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
+        session = if (Pty.available()) PtySession(cwd) else ShellSession(cwd)
+        bindSession()
+        session.start()
+        if (!session.isAlive()) {
+            append("\u26A0 PTY no disponible; usando shell persistente.")
+            session = ShellSession(cwd)
+            bindSession()
+            session.start()
+        }
+        title.text = if (session is PtySession) "PTY · /system/bin/sh" else context.getString(R.string.terminal_title)
+    }
+
+    private fun bindSession() {
         session.onLine = { line -> post { append(line) } }
         session.onClosed = { post { append("[sesión terminada]") } }
-        session.start()
     }
 
     private fun submit() {

@@ -1,0 +1,3 @@
+# ninja log v5
+0	30	1789939439344056033	CMakeFiles/keyidepty.dir/pty.c.o	400f7be59d4f5a7
+31	47	1789939439360057293	/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/RelWithDebInfo/4s520615/obj/x86_64/libkeyidepty.so	5c6751d57378da2a

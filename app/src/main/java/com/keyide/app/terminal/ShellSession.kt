@@ -7,14 +7,11 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
 /**
- * Sesión de shell PERSISTENTE sobre `/system/bin/sh`.
- *
+ * Sesión de shell PERSISTENTE sobre `/system/bin/sh` (fallback si no hay PTY).
  * Mantiene el proceso vivo: `cd`, variables de entorno y estado se conservan
- * entre comandos (a diferencia de lanzar cada comando por separado).
- * No es un PTY (no hay control de trabajos ni apps de pantalla completa),
- * pero sí es una sesión real e interactiva.
+ * entre comandos. No es un PTY (sin control de trabajos ni apps de pantalla completa).
  */
-class ShellSession(private val cwd: File) {
+class ShellSession(private val cwd: File) : TerminalSession {
 
     private var process: Process? = null
     private var writer: BufferedWriter? = null
@@ -22,12 +19,12 @@ class ShellSession(private val cwd: File) {
     @Volatile
     private var alive = false
 
-    var onLine: ((String) -> Unit)? = null
-    var onClosed: (() -> Unit)? = null
+    override var onLine: ((String) -> Unit)? = null
+    override var onClosed: (() -> Unit)? = null
 
-    fun isAlive(): Boolean = alive
+    override fun isAlive(): Boolean = alive
 
-    fun start() {
+    override fun start() {
         if (alive) return
         try {
             val p = ProcessBuilder("/system/bin/sh")
@@ -55,7 +52,7 @@ class ShellSession(private val cwd: File) {
         }
     }
 
-    fun send(command: String): Boolean {
+    override fun send(command: String): Boolean {
         val w = writer ?: return false
         return try {
             w.write(command)
@@ -68,7 +65,7 @@ class ShellSession(private val cwd: File) {
         }
     }
 
-    fun stop() {
+    override fun stop() {
         alive = false
         runCatching { writer?.write("exit\n"); writer?.flush() }
         runCatching { process?.destroy() }

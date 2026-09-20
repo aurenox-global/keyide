@@ -13,9 +13,11 @@
 - [ ] **PTY real** (control de trabajos, apps de pantalla completa).
 - [x] **Temas claros globales** (oscuro/claro/sistema) y **tests unitarios**.
 - [x] **i18n (ES/EN)** + selector de idioma (quedan algunos textos por migrar).
+- [x] **PTY real** (control de trabajos, apps de pantalla completa) — experimental, con fallback.
 - [ ] **Debugger on-device** con breakpoints.
 - [ ] **Node.js real** (npm / módulos nativos).
 - [ ] **Build on-device** (Gradle/Kotlin).
+- [ ] **i18n**: terminar de migrar los textos restantes (paleta/diálogos).
 - [ ] **Release firmado + subir a GitHub** (repo, CI, capturas).
 
 ## Medio plazo
