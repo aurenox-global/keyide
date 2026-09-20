@@ -49,6 +49,11 @@ class Settings(context: Context) {
         get() = sp.getBoolean("js_trace", false)
         set(v) = sp.edit().putBoolean("js_trace", v).apply()
 
+    /** Motor de JavaScript: "v8" (WebView, por defecto) o "node". */
+    var jsEngine: String
+        get() = sp.getString("js_engine", "v8") ?: "v8"
+        set(v) = sp.edit().putString("js_engine", v).apply()
+
     var editorTheme: String
         get() = sp.getString("editor_theme", "onedark") ?: "onedark"
         set(v) = sp.edit().putString("editor_theme", v).apply()

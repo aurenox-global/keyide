@@ -129,7 +129,7 @@ footer{border-top:1px solid var(--line);padding:30px 20px 60px;text-align:center
     <div class="card"><div class="ico">🔍</div><h3>Buscar y reemplazar</h3><p>En el documento y en todo el proyecto, con salto a la línea.</p></div>
     <div class="card"><div class="ico">🎯</div><h3>Ir a definición</h3><p>Salta a la definición de un nombre dentro del documento o del proyecto.</p></div>
     <div class="card"><div class="ico">🐞</div><h3>Depurador (JS/Python)</h3><p>Puntos de parada tocando el margen del editor y traza de las líneas ejecutadas.</p></div>
-    <div class="card"><div class="ico">🎨</div><h3>Tema global</h3><p>Oscuro, Claro o Sistema para toda la app; idioma ES/EN.</p></div>
+    <div class="card"><div class="ico">🟢</div><h3>Node.js real</h3><p>Motor <b>nodejs-mobile</b> embebido: <code>require</code> de <code>node_modules</code> (npm), con V8 como alternativa.</p></div>
     <div class="card"><div class="ico">🎨</div><h3>Temas y tamaño</h3><p>One Dark, Monokai y Claro; fuente de 10 a 24sp; persistencia de sesión.</p></div>
   </div>
 </section>
@@ -208,6 +208,8 @@ app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
 <section id="changelog">
   <h2><span class="n">Cambios</span>Changelog</h2>
   <div class="log">
+    <h3>0.18.0 <small>— 2026-09-20</small></h3>
+    <ul><li><b>Node.js real embebido</b> (nodejs-mobile) con motor V8/Node seleccionable y fallback.</li></ul>
     <h3>0.17.0 <small>— 2026-09-20</small></h3>
     <ul><li><b>i18n cerrada</b>: paleta de comandos (36) y diálogos en ES/EN.</li></ul>
     <h3>0.16.0 <small>— 2026-09-20</small></h3>
@@ -249,7 +251,6 @@ app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
 <section id="roadmap">
   <h2><span class="n">Roadmap</span>Lo que viene</h2>
   <ul class="feat todo">
-    <li><b>Node.js real</b> (npm / módulos nativos)</li>
     <li><b>Build on-device</b> (Gradle/Kotlin)</li>
   </ul>
 </section>

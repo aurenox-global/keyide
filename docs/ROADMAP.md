@@ -16,7 +16,7 @@
 - [x] **PTY real** (control de trabajos, apps de pantalla completa) — experimental, con fallback.
 - [x] **Depurador de JavaScript** (puntos de parada + traza).
 - [x] **Depurador de Python** (sys.settrace en Chaquopy).
-- [ ] **Node.js real** (npm / módulos nativos).
+- [x] **Node.js real** (nodejs-mobile embebido, `require` de node_modules).
 - [ ] **Build on-device** (Gradle/Kotlin).
 - [x] **i18n (ES/EN)** completa (paleta, diálogos y paneles).
 - [ ] **Node.js real** (npm / módulos nativos).

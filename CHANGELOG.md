@@ -4,6 +4,24 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.18.0] — 2026-09-20
+
+### Añadido
+- **Node.js REAL embebido (`nodejs-mobile`)**: `libnode.so` (~43 MB por ABI) + puente JNI
+  `libkeyidenode.so` que arranca `node::Start` en un hilo de 8 MB y mantiene un **servicio
+  Node persistente**: el bootstrap lee rutas de scripts por `stdin` y las ejecuta con
+  `require` (limpiando la caché). Salida capturada por tubería + `libc++_shared.so`.
+  → Con esto, el *Run* de JS puede **`require` de `node_modules` reales (npm)**.
+- **Motor JS seleccionable**: *Ver: Motor JS (V8 / Node)…* (V8 por defecto). **Fallback
+  automático a V8** si Node no arranca.
+- Script `scripts/fetch-nodejs-mobile.sh` para restaurar los binarios (van en `.gitignore`
+  por tamaño).
+
+### Notas
+- **El APK pasa a ~148 MB** (3 ABIs con `libnode`). El plugin Gradle de janeasystems ya no
+  existe → la integración es manual (JNI + `libnode.so`).
+- Compila y empaqueta correctamente; **no probado en dispositivo** (verificar `Run` con Node).
+
 ## [0.17.0] — 2026-09-20
 
 ### Cambiado

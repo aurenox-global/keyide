@@ -17,6 +17,15 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "keyidenode::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "keyidenode",
+      "output": "/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/RelWithDebInfo/4s520615/obj/arm64-v8a/libkeyidenode.so",
+      "runtimeFiles": [
+        "/home/zota/.openclaw/workspace/keyide/app/src/main/jniLibs/arm64-v8a/libnode.so"
+      ]
+    },
     "keyidepty::@6890427a1f51a3e7e1df": {
       "toolchain": "toolchain",
       "abi": "arm64-v8a",
@@ -34,5 +43,7 @@
   "cFileExtensions": [
     "c"
   ],
-  "cppFileExtensions": []
+  "cppFileExtensions": [
+    "cpp"
+  ]
 }

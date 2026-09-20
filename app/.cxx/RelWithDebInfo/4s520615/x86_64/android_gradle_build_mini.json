@@ -17,6 +17,14 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "keyidenode::@6890427a1f51a3e7e1df": {
+      "artifactName": "keyidenode",
+      "abi": "x86_64",
+      "output": "/home/zota/.openclaw/workspace/keyide/app/build/intermediates/cxx/RelWithDebInfo/4s520615/obj/x86_64/libkeyidenode.so",
+      "runtimeFiles": [
+        "/home/zota/.openclaw/workspace/keyide/app/src/main/jniLibs/x86_64/libnode.so"
+      ]
+    },
     "keyidepty::@6890427a1f51a3e7e1df": {
       "artifactName": "keyidepty",
       "abi": "x86_64",

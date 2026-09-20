@@ -106,6 +106,7 @@
     <string name="cmd_font_size">Ver: Tamaño de fuente…</string>
     <string name="cmd_app_theme">Ver: Tema de la app (oscuro/claro)…</string>
     <string name="cmd_language">Ver: Idioma (Sistema / ES / EN)…</string>
+    <string name="cmd_js_engine">Ver: Motor JS (V8 / Node)…</string>
     <string name="cmd_run">Ejecutar: fichero actual</string>
     <string name="cmd_dbg_run">Depurar: ejecutar con puntos de parada</string>
     <string name="cmd_dbg_trace">Depurar: activar/desactivar traza</string>
@@ -138,6 +139,7 @@
     <string name="dlg_theme_app">Tema de la app</string>
     <string name="dlg_theme_editor">Tema del editor</string>
     <string name="dlg_language">Idioma</string>
+    <string name="dlg_js_engine">Motor de JavaScript</string>
     <string name="opt_dark">Oscuro</string>
     <string name="opt_light">Claro</string>
     <string name="opt_system">Sistema</string>

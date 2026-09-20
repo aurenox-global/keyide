@@ -106,6 +106,7 @@
     <string name="cmd_font_size">View: Font size…</string>
     <string name="cmd_app_theme">View: App theme (dark/light)…</string>
     <string name="cmd_language">View: Language (System / ES / EN)…</string>
+    <string name="cmd_js_engine">View: JS engine (V8 / Node)…</string>
     <string name="cmd_run">Run: current file</string>
     <string name="cmd_dbg_run">Debug: run with breakpoints</string>
     <string name="cmd_dbg_trace">Debug: toggle trace</string>
@@ -138,6 +139,7 @@
     <string name="dlg_theme_app">App theme</string>
     <string name="dlg_theme_editor">Editor theme</string>
     <string name="dlg_language">Language</string>
+    <string name="dlg_js_engine">JavaScript engine</string>
     <string name="opt_dark">Dark</string>
     <string name="opt_light">Light</string>
     <string name="opt_system">System</string>

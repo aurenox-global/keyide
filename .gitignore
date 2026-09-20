@@ -12,3 +12,5 @@ dist/
 *.keystore
 *.apk
 *.zip
+app/src/main/jniLibs/
+app/src/main/cpp/node/

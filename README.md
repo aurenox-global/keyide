@@ -32,7 +32,7 @@ deslizables; con pantalla ancha se activa el **split editor | vista previa**.
 | **Editor** | Números de línea, gutter con diagnósticos, resaltado de sintaxis, auto-indentación, auto-cierre de paréntesis/comillas, ajuste de línea, ir a línea. |
 | **Autocompletado** | LSP-lite: palabras clave/builtins del lenguaje + todas las palabras del documento. |
 | **Multi-archivo** | Pestañas con buffer independiente e indicador de cambios (`●`). |
-| **Run real** | JavaScript (motor V8 del WebView, con `require` de módulos locales) y **Python embebido** (Chaquopy). |
+| **Run real** | JavaScript (motor V8 del WebView, o **Node.js embebido** con `npm`/node_modules) y **Python embebido** (Chaquopy). |
 | **Vista previa** | WebView para HTML/CSS/JS/SVG y render de Markdown; en split lateral o pantalla completa. |
 | **Terminal** | Sesión de shell **persistente** (`cd` y entorno se conservan). |
 | **Git** | Nativo con **JGit**: estado, init, commit, log, pull, push y clone. |

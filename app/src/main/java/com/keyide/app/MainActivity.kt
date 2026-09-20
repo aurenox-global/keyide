@@ -43,6 +43,8 @@ import com.keyide.app.edit.ProjectSearchPanel
 import com.keyide.app.palette.CommandPalette
 import com.keyide.app.preview.PreviewPanel
 import com.keyide.app.run.JsRunner
+import com.keyide.app.run.NodeRunner
+import com.keyide.app.run.NodeSession
 import com.keyide.app.run.PythonBridge
 import com.keyide.app.settings.SettingsPanel
 import com.keyide.app.terminal.TerminalPanel
@@ -89,6 +91,7 @@ class MainActivity : AppCompatActivity() {
     private var aiPanel: AiPanel? = null
     private var previewPanel: PreviewPanel? = null
     private var jsRunner: JsRunner? = null
+    private var nodeSession: NodeSession? = null
     private var findPanel: FindPanel? = null
     private var searchPanel: ProjectSearchPanel? = null
 
@@ -704,6 +707,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun runJs(d: Doc) {
+        if (settings.jsEngine == "node" && NodeRunner.available()) runJsNode(d) else runJsV8(d)
+    }
+
+    /** Motor Node.js real (nodejs-mobile): require de node_modules; servidor Node persistente. */
+    private fun runJsNode(d: Doc) {
+        val f = d.file
+        if (f == null) {
+            terminalPanel?.appendOutput("\u26A0 El motor Node solo funciona con ficheros del proyecto interno (no SAF).")
+            return
+        }
+        if (b.editor.isModified) saveCurrent()
+        var s = nodeSession
+        if (s == null || !s.isAlive()) {
+            val ns = NodeSession(this)
+            ns.onLine = { line -> terminalPanel?.appendOutput(line) }
+            ns.onDone = { terminalPanel?.appendOutput("\u2714 fin de la ejecución") }
+            ns.start(internalStack.lastOrNull() ?: WorkspaceRepo.root(this))
+            if (!ns.isAlive()) {
+                terminalPanel?.appendOutput("\u26A0 Node no arranc\u00f3; uso el motor V8.")
+                nodeSession = null
+                runJsV8(d)
+                return
+            }
+            nodeSession = ns
+            s = ns
+        }
+        terminalPanel?.appendOutput("$ node ${f.name}   (Node.js embebido)")
+        s?.send(f.absolutePath)
+    }
+
+    private fun showJsEngineDialog() {
+        val opts = arrayOf("V8 (WebView)", "Node.js (nodejs-mobile)")
+        val cur = if (settings.jsEngine == "node") 1 else 0
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.dlg_js_engine))
+            .setSingleChoiceItems(opts, cur) { dialog, which ->
+                settings.jsEngine = if (which == 1) "node" else "v8"
+                nodeSession?.stop()
+                nodeSession = null
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun runJsV8(d: Doc) {
         val js = jsRunner ?: JsRunner(this).also { jsRunner = it }
         val (base, modules) = buildJsModules()
         val bp = b.editor.breakpoints.toSet()
@@ -819,6 +867,7 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd(getString(R.string.cmd_font_size)) { showFontSizeDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_goto_line)) { goToLineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_run)) { runCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_js_engine)) { showJsEngineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_run)) { runCurrent() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_trace)) { toggleJsTrace() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_clear)) { b.editor.clearBreakpoints(); toast("Puntos de parada borrados") },

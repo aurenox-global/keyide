@@ -3,5 +3,10 @@
   "directory": "/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/arm64-v8a",
   "command": "/home/zota/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=aarch64-none-linux-android26 --sysroot=/home/zota/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dkeyidepty_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC -o CMakeFiles/keyidepty.dir/pty.c.o -c /home/zota/.openclaw/workspace/keyide/app/src/main/cpp/pty.c",
   "file": "/home/zota/.openclaw/workspace/keyide/app/src/main/cpp/pty.c"
+},
+{
+  "directory": "/home/zota/.openclaw/workspace/keyide/app/.cxx/Debug/73414y1y/arm64-v8a",
+  "command": "/home/zota/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android26 --sysroot=/home/zota/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dkeyidenode_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC -o CMakeFiles/keyidenode.dir/node_bridge.cpp.o -c /home/zota/.openclaw/workspace/keyide/app/src/main/cpp/node_bridge.cpp",
+  "file": "/home/zota/.openclaw/workspace/keyide/app/src/main/cpp/node_bridge.cpp"
 }
 ]

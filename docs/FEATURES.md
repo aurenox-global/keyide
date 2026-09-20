@@ -25,6 +25,8 @@
   Incluye un **mini CommonJS**: `require()` de módulos **locales** (`./x`, `../y`, `.js` o
   `index.js`), `module.exports`, `process` (`argv`, `env`, `cwd()`), `__filename`.
   (Sin npm ni módulos nativos.)
+- **Motor seleccionable**: *Ver: Motor JS (V8 / Node)…*. Con **Node.js real**
+  (`nodejs-mobile`) puedes `require` de **node_modules (npm)**; si Node no arranca, usa V8.
 - **Python** → intérprete embebido (Chaquopy); stdout/stderr al terminal.
 - **Shell** (`.sh`) y comandos libres en el **terminal integrado**.
 
