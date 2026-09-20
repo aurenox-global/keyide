@@ -41,6 +41,7 @@ deslizables; con pantalla ancha se activa el **split editor | vista previa**.
 | **Búsqueda** | Buscar y reemplazar en el documento y en el proyecto; **ir a definición**, hover, referencias y renombrar. |
 | **Depurador** | **Puntos de parada** (toque en el margen) y **traza** para **JavaScript y Python**. |
 | **Terminal** | **PTY real** (apps interactivas) con fallback a sesión persistente. |
+| **Build** | Panel on-device: checks `.py`/`.js`, **npm install/run** y `build.sh`. |
 | **Apariencia** | **Tema global** (oscuro/claro/sistema), **idioma ES/EN**, temas del editor y **persistencia de sesión**. |
 
 ## 📱 Capturas

@@ -140,6 +140,16 @@
     <string name="dlg_theme_editor">Editor theme</string>
     <string name="dlg_language">Language</string>
     <string name="dlg_js_engine">JavaScript engine</string>
+
+    <!-- Build -->
+    <string name="sheet_build">Build</string>
+    <string name="cmd_build">Build: build panel…</string>
+    <string name="build_project">Project</string>
+    <string name="build_py_check">Check syntax (.py)</string>
+    <string name="build_js_check">Check syntax (.js)</string>
+    <string name="build_run_sh">Run build.sh</string>
+    <string name="build_gradle_note">Gradle/Kotlin/Java: needs a JDK, which is not available on-device. Use the terminal (with Termux) or build on a PC.</string>
+    <string name="build_nothing">No sources or scripts found to build in this folder.</string>
     <string name="opt_dark">Dark</string>
     <string name="opt_light">Light</string>
     <string name="opt_system">System</string>

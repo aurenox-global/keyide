@@ -17,7 +17,9 @@
 - [x] **Depurador de JavaScript** (puntos de parada + traza).
 - [x] **Depurador de Python** (sys.settrace en Chaquopy).
 - [x] **Node.js real** (nodejs-mobile embebido, `require` de node_modules).
-- [ ] **Build on-device** (Gradle/Kotlin).
+- [x] **Build on-device** (checks `.py`/`.js`, `npm install`/`run`, `build.sh`) — Gradle/JVM no es viable en móvil.
+- [ ] Depurador **Node** con inspector (DAP).
+- [ ] Build **Gradle/Kotlin** en el PC/CI (no on-device).
 - [x] **i18n (ES/EN)** completa (paleta, diálogos y paneles).
 - [ ] **Node.js real** (npm / módulos nativos).
 

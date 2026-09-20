@@ -25,6 +25,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.documentfile.provider.DocumentFile
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.keyide.app.ai.AiPanel
+import com.keyide.app.build.BuildInfo
+import com.keyide.app.build.BuildPanel
 import com.keyide.app.data.Settings
 import com.keyide.app.databinding.ActivityMainBinding
 import com.keyide.app.editor.Diagnostic
@@ -92,6 +94,8 @@ class MainActivity : AppCompatActivity() {
     private var previewPanel: PreviewPanel? = null
     private var jsRunner: JsRunner? = null
     private var nodeSession: NodeSession? = null
+    private var buildNode: NodeSession? = null
+    private var buildPanel: BuildPanel? = null
     private var findPanel: FindPanel? = null
     private var searchPanel: ProjectSearchPanel? = null
 
@@ -612,6 +616,16 @@ class MainActivity : AppCompatActivity() {
                 b.sheetTitle.text = getString(R.string.sheet_search)
                 b.sheetContent.addView(panel, params)
             }
+            SHEET_BUILD -> {
+                val panel = buildPanel ?: BuildPanel(this).also {
+                    it.onAction = { id -> runBuildAction(id) }
+                    buildPanel = it
+                }
+                b.sheetTitle.text = getString(R.string.sheet_build)
+                b.sheetContent.addView(panel, params)
+                panel.clear()
+                panel.render(buildInfo())
+            }
         }
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -867,6 +881,7 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd(getString(R.string.cmd_font_size)) { showFontSizeDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_goto_line)) { goToLineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_run)) { runCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_build)) { openSheet(SHEET_BUILD) },
             CommandPalette.Cmd(getString(R.string.cmd_js_engine)) { showJsEngineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_run)) { runCurrent() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_trace)) { toggleJsTrace() },
@@ -1312,6 +1327,146 @@ class MainActivity : AppCompatActivity() {
         return walk(internalStack.lastOrNull() ?: WorkspaceRepo.root(this), 0)
     }
 
+    // ── Compilar / Build (on-device) ──────────────────────────────────────
+
+    private fun buildInfo(): BuildInfo {
+        val dir = if (safMode) null else (internalStack.lastOrNull() ?: WorkspaceRepo.root(this))
+        val label = if (safMode) "SAF (content://) — no compilable aquí" else (dir?.absolutePath ?: "—")
+        var hasPy = false; var hasJs = false; var hasSh = false
+        var hasGradle = false; var hasKotlin = false; var hasPkg = false
+        val scripts = LinkedHashSet<String>()
+        if (dir != null) {
+            fun walk(d: File, depth: Int) {
+                if (depth > 4) return
+                d.listFiles()?.forEach { f ->
+                    if (f.name.startsWith(".") || f.name == "node_modules" || f.name == "build") return@forEach
+                    if (f.isDirectory) walk(f, depth + 1)
+                    else when (f.name) {
+                        "package.json" -> {
+                            hasPkg = true
+                            runCatching {
+                                org.json.JSONObject(f.readText()).optJSONObject("scripts")
+                                    ?.let { s -> s.keys().forEach { scripts.add(it) } }
+                            }
+                        }
+                        "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts" -> hasGradle = true
+                        else -> when (f.extension.lowercase(Locale.ROOT)) {
+                            "py" -> hasPy = true
+                            "js", "mjs", "cjs", "ts" -> hasJs = true
+                            "sh" -> hasSh = true
+                            "kt", "kts", "java" -> hasKotlin = true
+                        }
+                    }
+                }
+            }
+            walk(dir, 0)
+        }
+        return BuildInfo(label, hasPkg, scripts.sorted(), hasPy, hasJs, hasSh, hasGradle, hasKotlin)
+    }
+
+    private fun runBuildAction(id: String) {
+        val panel = buildPanel ?: return
+        val dir = internalStack.lastOrNull() ?: WorkspaceRepo.root(this)
+        when {
+            id == "py" -> pyCheck(dir, panel)
+            id == "js" -> jsCheck(dir, panel)
+            id == "sh" -> runShBuild(dir, panel)
+            id == "npm_install" -> npmRun(panel, listOf("install"))
+            id.startsWith("npm_run:") -> npmRun(panel, listOf("run", id.removePrefix("npm_run:")))
+            else -> panel.append("Acción no soportada: $id")
+        }
+    }
+
+    private fun pyCheck(dir: File, panel: BuildPanel) {
+        val code = """
+import py_compile, os
+_d = ${jsStr(dir.absolutePath)}
+bad = 0; n = 0
+for root, dirs, files in os.walk(_d):
+    dirs[:] = [x for x in dirs if not x.startswith('.')]
+    for f in files:
+        if f.endswith('.py'):
+            n += 1
+            p = os.path.join(root, f)
+            try:
+                py_compile.compile(p, doraise=True)
+            except Exception as e:
+                bad += 1
+                print(p, '->', e)
+print('Comprobados', n, 'ficheros .py ->', 'OK' if bad == 0 else str(bad) + ' con errores')
+""".trimIndent()
+        panel.append("\n$ python -m py_compile")
+        PythonBridge.run(code) { out -> panel.append(if (out.isBlank()) "(sin salida)" else out.trimEnd()) }
+    }
+
+    private fun jsCheck(dir: File, panel: BuildPanel) {
+        if (!NodeRunner.available()) {
+            panel.append("\u26A0 La comprobación .js necesita el motor Node (paleta \u2192 Motor JS \u2192 Node).")
+            return
+        }
+        val checker = File(filesDir, "keyide_check.js")
+        runCatching { checker.writeText(JS_CHECK) }
+        val ns = buildNodeSession(panel) ?: return
+        panel.append("\n$ node --check (proyecto)")
+        ns.runScript(checker.absolutePath, listOf(dir.absolutePath))
+    }
+
+    private fun runShBuild(dir: File, panel: BuildPanel) {
+        val f = File(dir, "build.sh").takeIf { it.exists() }
+            ?: dir.listFiles()?.firstOrNull { it.extension == "sh" }
+        if (f == null) { panel.append("\u26A0 No hay build.sh"); return }
+        hideSheet()
+        openSheet(SHEET_TERMINAL)
+        terminalPanel?.post { terminalPanel?.runCommand("cd \"${dir.absolutePath}\" && sh \"${f.name}\"") }
+    }
+
+    private fun npmRun(panel: BuildPanel, args: List<String>) {
+        if (!NodeRunner.available()) { panel.append("\u26A0 Node no disponible en esta build."); return }
+        val dir = internalStack.lastOrNull() ?: WorkspaceRepo.root(this)
+        val cli = ensureNpm()
+        if (cli == null) { panel.append("\u26A0 npm no disponible."); return }
+        val ns = buildNodeSession(panel) ?: return
+        val cache = File(filesDir, "npm-cache").apply { mkdirs() }
+        val full = args + listOf("--prefix", dir.absolutePath, "--cache", cache.absolutePath, "--no-audit", "--no-fund")
+        panel.append("\n$ npm ${full.joinToString(" ")}")
+        ns.runScript(cli.absolutePath, full)
+    }
+
+    private fun buildNodeSession(panel: BuildPanel): NodeSession? {
+        val s = buildNode
+        if (s != null && s.isAlive()) return s
+        val ns = NodeSession(this)
+        ns.onLine = { line -> panel.append(line) }
+        ns.onDone = { panel.append("\u2714 fin") }
+        ns.start(internalStack.lastOrNull() ?: WorkspaceRepo.root(this))
+        if (!ns.isAlive()) { panel.append("\u26A0 Node no arrancó."); return null }
+        buildNode = ns
+        return ns
+    }
+
+    private fun ensureNpm(): File? {
+        val target = File(filesDir, "npm")
+        val cli = File(target, "bin/npm-cli.js")
+        if (cli.exists()) return cli
+        return runCatching {
+            copyAssetDir("npm", target)
+            if (cli.exists()) cli else null
+        }.getOrNull()
+    }
+
+    private fun copyAssetDir(assetDir: String, target: File) {
+        val children = assets.list(assetDir) ?: return
+        target.mkdirs()
+        for (c in children) {
+            val src = "$assetDir/$c"
+            val sub = assets.list(src)
+            if (sub != null && sub.isNotEmpty()) copyAssetDir(src, File(target, c))
+            else runCatching { assets.open(src).use { i -> File(target, c).outputStream().use { i.copyTo(it) } } }
+        }
+    }
+
+    private fun jsStr(s: String) = "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -1355,5 +1510,27 @@ class MainActivity : AppCompatActivity() {
         private const val SHEET_SETTINGS = 6
         private const val SHEET_FIND = 7
         private const val SHEET_SEARCH = 8
+        private const val SHEET_BUILD = 9
+
+        private val JS_CHECK = """
+var fs = require('fs'), path = require('path'), vm = require('vm');
+var dir = process.argv[2];
+var bad = 0, n = 0;
+function walk(d) {
+  fs.readdirSync(d).forEach(function (f) {
+    if (f === 'node_modules' || f[0] === '.') return;
+    var p = path.join(d, f), st;
+    try { st = fs.statSync(p); } catch (e) { return; }
+    if (st.isDirectory()) walk(p);
+    else if (/\.(js|mjs|cjs)$/.test(f)) {
+      n++;
+      try { new vm.Script(fs.readFileSync(p, 'utf8'), { filename: p }); }
+      catch (e) { bad++; console.error(p + ': ' + e.message); }
+    }
+  });
+}
+walk(dir);
+console.log('Comprobados ' + n + ' ficheros .js -> ' + (bad === 0 ? 'OK' : bad + ' con errores'));
+""".trimIndent()
     }
 }

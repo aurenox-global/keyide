@@ -78,8 +78,18 @@ class NodeSession(private val context: Context) {
         t.start()
     }
 
-    fun send(scriptPath: String): Boolean = try {
-        out?.write((scriptPath + "\n").toByteArray())
+    fun send(scriptPath: String): Boolean = sendRaw(scriptPath)
+
+    /** Ejecuta un script con argumentos (process.argv) dentro del servicio Node. */
+    fun runScript(scriptPath: String, args: List<String>): Boolean {
+        val obj = org.json.JSONObject()
+            .put("script", scriptPath)
+            .put("args", org.json.JSONArray(args))
+        return sendRaw(obj.toString())
+    }
+
+    private fun sendRaw(line: String): Boolean = try {
+        out?.write((line + "\n").toByteArray())
         out?.flush()
         true
     } catch (e: Exception) {
@@ -126,9 +136,17 @@ process.stdin.on('data', function (d) {
     var line = __buf.slice(0, i).trim();
     __buf = __buf.slice(i + 1);
     if (!line) continue;
+    if (!line) continue;
+    var cmd = null;
+    if (line.charAt(0) === '{') { try { cmd = JSON.parse(line); } catch (e) { cmd = null; } }
     try {
       Object.keys(require.cache).forEach(function (k) { delete require.cache[k]; });
-      require(line);
+      if (cmd && cmd.script) {
+        process.argv = ['node', cmd.script].concat(cmd.args || []);
+        require(cmd.script);
+      } else {
+        require(line);
+      }
     } catch (e) {
       console.error(e && e.stack ? e.stack : String(e));
     }

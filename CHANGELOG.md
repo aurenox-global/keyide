@@ -4,6 +4,25 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.19.0] — 2026-09-21
+
+### Añadido
+- **Compilar / Build (on-device)**: panel nuevo que **detecta el tipo de proyecto** y lanza
+  acciones reales en el dispositivo:
+  - **Comprobar sintaxis Python** (`py_compile` sobre todos los `.py`).
+  - **Comprobar sintaxis JavaScript** (con Node: `vm.Script` sobre los `.js`, excluyendo
+    `node_modules`).
+  - **npm**: `npm install` y `npm run <script>` — **npm 6.14.18 embebido** en `assets/npm`,
+    ejecutado por el Node embebido (con `--prefix`, caché en el dispositivo).
+  - **Ejecutar `build.sh`** en el terminal (persistente/PTY).
+  - **Gradle/Kotlin/Java**: aviso honesto — requiere un **JDK**, no disponible on-device.
+- Se amplió el protocolo del servicio Node (comandos JSON `{script,args}`) para poder
+  ejecutar scripts con argumentos (`process.argv`).
+
+### Notas
+- El panel no compila proyectos Android/Gradle en el móvil (imposible sin JVM); para eso
+  ofrece el terminal (Termux) o compilar en el PC.
+
 ## [0.18.0] — 2026-09-20
 
 ### Añadido
