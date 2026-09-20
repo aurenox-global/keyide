@@ -107,6 +107,7 @@
     <string name="cmd_app_theme">Ver: Tema de la app (oscuro/claro)…</string>
     <string name="cmd_language">Ver: Idioma (Sistema / ES / EN)…</string>
     <string name="cmd_js_engine">Ver: Motor JS (V8 / Node)…</string>
+    <string name="cmd_hide_bar">Ver: Ocultar barra al escribir (ON/OFF)</string>
     <string name="cmd_run">Ejecutar: fichero actual</string>
     <string name="cmd_dbg_run">Depurar: ejecutar con puntos de parada</string>
     <string name="cmd_dbg_trace">Depurar: activar/desactivar traza</string>

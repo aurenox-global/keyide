@@ -107,6 +107,7 @@
     <string name="cmd_app_theme">View: App theme (dark/light)…</string>
     <string name="cmd_language">View: Language (System / ES / EN)…</string>
     <string name="cmd_js_engine">View: JS engine (V8 / Node)…</string>
+    <string name="cmd_hide_bar">View: Hide bar while typing (ON/OFF)</string>
     <string name="cmd_run">Run: current file</string>
     <string name="cmd_dbg_run">Debug: run with breakpoints</string>
     <string name="cmd_dbg_trace">Debug: toggle trace</string>

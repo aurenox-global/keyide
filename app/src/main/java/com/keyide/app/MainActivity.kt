@@ -3,6 +3,7 @@ package com.keyide.app
 import com.keyide.app.ui.Ui
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -158,36 +159,55 @@ class MainActivity : AppCompatActivity() {
     // ── Insets ────────────────────────────────────────────────────────────
 
     private var keysBarWasVisible = false
+    private var topInset = 0
+    private var navInset = 0
 
     /**
-     * Insets. OJO:
-     *  - API 30+: el sistema NO redimensiona → controlamos el teclado con los insets.
-     *  - API < 30: `adjustResize` YA encoge la ventana → si sumásemos el inset del teclado
-     *    otra vez (doble ajuste) las barras se iban demasiado arriba y tapaban el editor.
-     * Con el teclado abierto, ocultamos la barra de símbolos para dar espacio al código.
+     * Insets/teclado. Para el teclado usamos la **altura real visible**
+     * (`getWindowVisibleDisplayFrame`), que da el solapamiento exacto sin doble ajuste
+     * (funciona igual si el sistema redimensiona la ventana o si no).
      */
     private fun applyInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(b.root) { _, insets ->
             val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-            val useIme = Build.VERSION.SDK_INT >= 30
-            val bottom = if (useIme) maxOf(sys.bottom, ime.bottom) else sys.bottom
-            b.rootColumn.setPadding(0, sys.top, 0, bottom)
-            b.sheet.setPadding(0, 0, 0, bottom)
-
-            val imeVisible = ime.bottom > 0 && ime.bottom > sys.bottom
-            if (imeVisible) {
-                if (b.keysBar.visibility == View.VISIBLE) {
-                    keysBarWasVisible = true
-                    b.keysBar.visibility = View.GONE
-                }
-            } else if (keysBarWasVisible) {
-                keysBarWasVisible = false
-                b.keysBar.visibility = View.VISIBLE
-            }
+            topInset = sys.top
+            navInset = sys.bottom
+            updateBottomPadding()
             insets
         }
+        b.root.viewTreeObserver.addOnGlobalLayoutListener { updateBottomPadding() }
         ViewCompat.requestApplyInsets(b.root)
+    }
+
+    private fun updateBottomPadding() {
+        if (!::settings.isInitialized) return
+        val r = Rect()
+        b.root.getWindowVisibleDisplayFrame(r)
+        val overlap = (b.root.height - r.bottom).coerceAtLeast(0)
+        val bottom = maxOf(navInset, overlap)
+        b.rootColumn.setPadding(0, topInset, 0, bottom)
+        b.sheet.setPadding(0, 0, 0, bottom)
+
+        val d = resources.displayMetrics.density
+        val imeOpen = overlap > navInset + (80 * d).toInt()
+
+        // Barra de símbolos: se oculta al escribir (es redundante con el teclado).
+        if (imeOpen) {
+            if (b.keysBar.visibility == View.VISIBLE) {
+                keysBarWasVisible = true
+                b.keysBar.visibility = View.GONE
+            }
+        } else if (keysBarWasVisible) {
+            keysBarWasVisible = false
+            b.keysBar.visibility = View.VISIBLE
+        }
+
+        // Interruptor de seguridad: ocultar también la barra de navegación al escribir.
+        if (settings.hideBarWhileTyping) {
+            b.bottomNav.visibility = if (imeOpen) View.GONE else View.VISIBLE
+        } else if (b.bottomNav.visibility != View.VISIBLE) {
+            b.bottomNav.visibility = View.VISIBLE
+        }
     }
 
     // ── Toolbar ───────────────────────────────────────────────────────────
@@ -770,6 +790,12 @@ class MainActivity : AppCompatActivity() {
         s?.send(f.absolutePath)
     }
 
+    private fun toggleHideBar() {
+        settings.hideBarWhileTyping = !settings.hideBarWhileTyping
+        updateBottomPadding()
+        toast(if (settings.hideBarWhileTyping) "Ocultar barra al escribir: ON" else "Ocultar barra al escribir: OFF")
+    }
+
     private fun showJsEngineDialog() {
         val opts = arrayOf("V8 (WebView)", "Node.js (nodejs-mobile)")
         val cur = if (settings.jsEngine == "node") 1 else 0
@@ -901,6 +927,7 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd(getString(R.string.cmd_goto_line)) { goToLineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_run)) { runCurrent() },
             CommandPalette.Cmd(getString(R.string.cmd_build)) { openSheet(SHEET_BUILD) },
+            CommandPalette.Cmd(getString(R.string.cmd_hide_bar)) { toggleHideBar() },
             CommandPalette.Cmd(getString(R.string.cmd_js_engine)) { showJsEngineDialog() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_run)) { runCurrent() },
             CommandPalette.Cmd(getString(R.string.cmd_dbg_trace)) { toggleJsTrace() },

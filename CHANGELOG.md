@@ -4,6 +4,18 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.19.2] — 2026-09-21
+
+### Corregido
+- **Barra inferior con el teclado (medición robusta)**: en vez de fiarnos de los *insets*
+  (que en algunas versiones se suman al redimensionado y mandaban la barra demasiado arriba),
+  ahora se mide la **altura real que tapa el teclado** con `getWindowVisibleDisplayFrame`
+  (overlap = altura de la vista − frame visible). Funciona igual si el sistema redimensiona la
+  ventana o si no → **sin doble ajuste**; la barra queda justo encima del teclado.
+- **Interruptor de seguridad**: paleta → *Ver: Ocultar barra al escribir (ON/OFF)*. Si se
+  activa, la barra de navegación se **oculta** mientras escribes (máximo espacio de código).
+  Por defecto OFF.
+
 ## [0.19.1] — 2026-09-21
 
 ### Corregido

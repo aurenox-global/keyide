@@ -54,6 +54,11 @@ class Settings(context: Context) {
         get() = sp.getString("js_engine", "v8") ?: "v8"
         set(v) = sp.edit().putString("js_engine", v).apply()
 
+    /** Oculta la barra de navegación inferior mientras se escribe (interruptor de seguridad). */
+    var hideBarWhileTyping: Boolean
+        get() = sp.getBoolean("hide_bar_typing", false)
+        set(v) = sp.edit().putBoolean("hide_bar_typing", v).apply()
+
     var editorTheme: String
         get() = sp.getString("editor_theme", "onedark") ?: "onedark"
         set(v) = sp.edit().putString("editor_theme", v).apply()
