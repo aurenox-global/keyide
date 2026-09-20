@@ -110,6 +110,7 @@ footer{border-top:1px solid var(--line);padding:30px 20px 60px;text-align:center
     <span class="chip">minSdk 26</span><span class="chip">compileSdk 35</span>
     <span class="chip">Chaquopy (Python)</span><span class="chip">JGit</span>
     <span class="chip">SAF</span><span class="chip">IA multi-proveedor</span>
+    <span class="chip">NDK/JNI (PTY)</span><span class="chip">Depurador JS</span>
   </div>
 </section>
 
@@ -127,6 +128,8 @@ footer{border-top:1px solid var(--line);padding:30px 20px 60px;text-align:center
     <div class="card"><div class="ico">📂</div><h3>Carpetas reales</h3><p>SAF: abre, navega, crea y edita en cualquier carpeta del dispositivo.</p></div>
     <div class="card"><div class="ico">🔍</div><h3>Buscar y reemplazar</h3><p>En el documento y en todo el proyecto, con salto a la línea.</p></div>
     <div class="card"><div class="ico">🎯</div><h3>Ir a definición</h3><p>Salta a la definición de un nombre dentro del documento o del proyecto.</p></div>
+    <div class="card"><div class="ico">🐞</div><h3>Depurador JS</h3><p>Puntos de parada tocando el margen del editor y traza de las líneas ejecutadas.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>Tema global</h3><p>Oscuro, Claro o Sistema para toda la app; idioma ES/EN.</p></div>
     <div class="card"><div class="ico">🎨</div><h3>Temas y tamaño</h3><p>One Dark, Monokai y Claro; fuente de 10 a 24sp; persistencia de sesión.</p></div>
   </div>
 </section>
@@ -205,6 +208,17 @@ app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
 <section id="changelog">
   <h2><span class="n">Cambios</span>Changelog</h2>
   <div class="log">
+    <h3>0.15.0 <small>— 2026-09-20</small></h3>
+    <ul><li>Depurador JS: <b>puntos de parada</b> (toca el margen) y <b>traza</b> de líneas ejecutadas.</li></ul>
+    <h3>0.14.0</h3>
+    <ul><li>Terminal con <b>PTY real</b> (NDK/JNI) para apps interactivas + fallback al shell persistente.</li></ul>
+    <h3>0.13.0</h3>
+    <ul><li><b>i18n ES/EN</b> (textos a recursos) y selector de idioma.</li></ul>
+    <h3>0.12.0</h3>
+    <ul><li><b>Tema global</b> de la app (oscuro/claro/sistema) y <b>tests</b> unitarios.</li></ul>
+    <h3>0.11.0</h3>
+    <ul><li><b>LSP-lite</b>: hover, buscar referencias y renombrar símbolo.</li>
+    <li><b>Formateo</b> de documento y <b>snippets</b>. Git sobre la carpeta activa.</li></ul>
     <h3>0.10.0 <small>— 2026-09-20</small></h3>
     <ul><li>Node-lite: <code>require()</code> de módulos locales (mini CommonJS), <code>module.exports</code>, <code>process</code>.</li>
     <li>Ir a definición (LSP-lite) con Ctrl+B o paleta.</li></ul>
@@ -231,13 +245,10 @@ app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
 <section id="roadmap">
   <h2><span class="n">Roadmap</span>Lo que viene</h2>
   <ul class="feat todo">
-    <li>LSP real (hover, referencias, renombrar)</li>
-    <li>PTY real en el terminal (control de trabajos)</li>
-    <li>Debugger on-device con breakpoints</li>
-    <li>Formateo de código y snippets</li>
-    <li>Node.js real (npm / módulos nativos)</li>
-    <li>Build on-device (Gradle/Kotlin)</li>
-    <li>Temas claros globales, i18n y tests</li>
+    <li>Depurador de <b>Python</b> (hooks en Chaquopy)</li>
+    <li><b>Node.js real</b> (npm / módulos nativos)</li>
+    <li><b>Build on-device</b> (Gradle/Kotlin)</li>
+    <li>Terminar la <b>i18n</b> (textos de la paleta y diálogos)</li>
   </ul>
 </section>
 

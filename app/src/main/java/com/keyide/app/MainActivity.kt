@@ -706,11 +706,27 @@ class MainActivity : AppCompatActivity() {
     private fun runJs(d: Doc) {
         val js = jsRunner ?: JsRunner(this).also { jsRunner = it }
         val (base, modules) = buildJsModules()
-        terminalPanel?.appendOutput("$ node ${d.name}   (V8 + require local · ${modules.size} módulos)")
-        js.run(b.editor.text(), base, modules,
+        val bp = b.editor.breakpoints.toSet()
+        val trace = settings.jsTrace
+        val mode = buildString {
+            append("V8 + require local · ${modules.size} módulos")
+            if (bp.isNotEmpty()) append(" · \uD83D\uDC1E ${bp.size} puntos de parada")
+            if (trace) append(" · traza")
+        }
+        terminalPanel?.appendOutput("$ node ${d.name}   ($mode)")
+        if (bp.isEmpty() && !trace) {
+            terminalPanel?.appendOutput("\u2139 Toca el margen izquierdo para poner/quitar puntos de parada.")
+        }
+        js.run(b.editor.text(), base, modules, bp, trace,
             onLine = { line -> terminalPanel?.appendOutput(line) },
-            onDone = { terminalPanel?.appendOutput("\u2714 fin de la ejecución") }
+            onDone = { terminalPanel?.appendOutput("\u2714 fin de la ejecución") },
+            onPause = { line -> terminalPanel?.appendOutput("\u23F8 pausa en la línea $line (quita el punto y vuelve a ejecutar)") }
         )
+    }
+
+    private fun toggleJsTrace() {
+        settings.jsTrace = !settings.jsTrace
+        toast(if (settings.jsTrace) "Traza JS: ON" else "Traza JS: OFF")
     }
 
     /** Módulos JS locales (ruta relativa → código) para el `require` del runner. */
@@ -810,6 +826,9 @@ class MainActivity : AppCompatActivity() {
             CommandPalette.Cmd("Ver: Tamaño de fuente…") { showFontSizeDialog() },
             CommandPalette.Cmd("Edición: Ir a línea…") { goToLineDialog() },
             CommandPalette.Cmd("Ejecutar: fichero actual") { runCurrent() },
+            CommandPalette.Cmd("Depurar: ejecutar con puntos de parada") { runCurrent() },
+            CommandPalette.Cmd("Depurar: activar/desactivar traza") { toggleJsTrace() },
+            CommandPalette.Cmd("Depurar: limpiar puntos de parada") { b.editor.clearBreakpoints(); toast("Puntos de parada borrados") },
             CommandPalette.Cmd("Git: Estado") { openSheet(SHEET_GIT) },
             CommandPalette.Cmd("Git: Commit + Push") { openSheet(SHEET_GIT); gitPanel?.post { gitPanel?.runCommit() } },
             CommandPalette.Cmd("AI: Abrir copiloto") { openSheet(SHEET_AI) },

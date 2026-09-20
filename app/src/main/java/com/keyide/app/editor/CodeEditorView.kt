@@ -115,6 +115,7 @@ class CodeEditorView @JvmOverloads constructor(
         })
 
         editor.setOnScrollChangeListener { _, _, scrollY, _, _ -> gutter.setEditorScroll(scrollY) }
+        gutter.onTapLine = { line -> toggleBreakpoint(line) }
 
         post { gutter.syncLayout(editor.lineHeight, editor.totalPaddingTop); refreshGutter() }
         setLanguage("javascript")
@@ -180,6 +181,19 @@ class CodeEditorView @JvmOverloads constructor(
 
     fun setDiagnostics(list: List<Diagnostic>) {
         gutter.diagnostics = list
+    }
+
+    /** Puntos de parada del depurador (1-based). */
+    val breakpoints: MutableSet<Int> = sortedSetOf()
+
+    fun toggleBreakpoint(line: Int) {
+        if (!breakpoints.add(line)) breakpoints.remove(line)
+        gutter.breakpoints = breakpoints.toSet()
+    }
+
+    fun clearBreakpoints() {
+        breakpoints.clear()
+        gutter.breakpoints = emptySet()
     }
 
     fun dismissCompletions() {

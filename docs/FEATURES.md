@@ -76,6 +76,13 @@
 - **Renombrar símbolo**: renombra todas las apariciones del identificador en el documento.
 - **Buscar en el proyecto** (ver más arriba) para localizar cualquier texto.
 
+## Depurador de JavaScript
+- **Puntos de parada**: toca el **margen** del editor para poner/quitar (punto rojo).
+- **Traza**: registra las líneas ejecutadas (`→ L n`).
+- Al llegar a un punto de parada, la ejecución se detiene e indica la línea.
+- Paleta: *Depurar: ejecutar con puntos de parada / activar-desactivar traza / limpiar puntos*.
+- Limitación: para solo en líneas completas (no en continuaciones de expresión).
+
 ## Formateo y snippets
 - **Formatear documento**: re-indenta por llaves (JS/TS/Java/Kotlin/JSON/CSS).
 - **Snippets** por lenguaje insertables en el cursor.

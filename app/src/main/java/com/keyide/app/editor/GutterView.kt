@@ -27,6 +27,13 @@ class GutterView @JvmOverloads constructor(
     var diagnostics: List<Diagnostic> = emptyList()
         set(v) { field = v; invalidate() }
 
+    /** Líneas con punto de parada (1-based). */
+    var breakpoints: Set<Int> = emptySet()
+        set(v) { field = v; invalidate() }
+
+    /** Toque sobre el margen → línea pulsada (1-based). */
+    var onTapLine: ((Int) -> Unit)? = null
+
     private val density = resources.displayMetrics.density
 
     private val numPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -86,7 +93,7 @@ class GutterView @JvmOverloads constructor(
             canvas.drawText((i + 1).toString(), x, baseline, numPaint)
         }
 
-        // Marcas de diagnóstico
+        // Marcas de diagnóstico (borde derecho)
         for (d in diagnostics) {
             val idx = d.line - 1
             if (idx < 0 || idx >= lineCount) continue
@@ -96,7 +103,26 @@ class GutterView @JvmOverloads constructor(
                 Severity.WARNING -> Color.parseColor("#D29922")
                 Severity.INFO -> Color.parseColor("#58A6FF")
             }
-            canvas.drawCircle(8f * density, cy, 3f * density, markPaint)
+            canvas.drawCircle(width - 7f * density, cy, 2.6f * density, markPaint)
         }
+
+        // Puntos de parada (borde izquierdo)
+        if (breakpoints.isNotEmpty()) {
+            markPaint.color = Color.parseColor("#F85149")
+            for (b in breakpoints) {
+                val idx = b - 1
+                if (idx < 0 || idx >= lineCount) continue
+                val cy = padTop - scrollYOffset + idx * lineHeight + lineHeight / 2f
+                canvas.drawCircle(7f * density, cy, 4.4f * density, markPaint)
+            }
+        }
+    }
+
+    override fun onTouchEvent(event: android.view.MotionEvent): Boolean {
+        if (event.action == android.view.MotionEvent.ACTION_UP && lineHeight > 0f) {
+            val line = ((scrollYOffset + event.y - padTop) / lineHeight).toInt() + 1
+            if (line in 1..lineCount) onTapLine?.invoke(line)
+        }
+        return true
     }
 }

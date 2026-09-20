@@ -4,6 +4,18 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.15.0] — 2026-09-20
+
+### Añadido
+- **Depurador de JavaScript (ligero)**: **puntos de parada** tocando el **margen** del editor
+  (punto rojo) y **traza** de las líneas ejecutadas. Al llegar a un punto de parada, la
+  ejecución se detiene y lo indica con la línea. Paleta: *Depurar: ejecutar con puntos de
+  parada / activar traza / limpiar puntos*. Sin puntos ni traza, la ejecución es normal.
+- **Web del proyecto actualizada** con las novedades, features y changelog.
+
+### Notas
+- El depurador JS solo puede parar en líneas "completas" (no en continuaciones de expresión).
+
 ## [0.14.0] — 2026-09-20
 
 ### Añadido

@@ -8,18 +8,19 @@ import android.webkit.WebViewClient
 import org.json.JSONObject
 
 /**
- * Ejecutor REAL de JavaScript usando el motor V8 del WebView de Android.
+ * Ejecutor REAL de JavaScript con el motor V8 del WebView.
  *
- * Además del código suelto, implementa un **mini CommonJS** en JS: `require()`
- * de módulos locales (rutas relativas `./x`, `../y`, extensiones `.js` e
- * `index.js`), `module.exports`, `process` y `console`.
- * No hay npm ni módulos nativos: solo ficheros del propio proyecto.
+ * Incluye un **mini CommonJS** (`require` de módulos locales) y un
+ * **depurador ligero**: puntos de parada (la ejecución se detiene en la línea
+ * marcada) y **traza** (registra las líneas ejecutadas).
+ * Sin npm ni módulos nativos.
  */
 class JsRunner(context: Context) {
 
     private val web = WebView(context)
     private var onLine: ((String) -> Unit)? = null
     private var onDone: (() -> Unit)? = null
+    private var onPause: ((Int) -> Unit)? = null
 
     init {
         @SuppressLint("SetJavaScriptEnabled")
@@ -32,7 +33,11 @@ class JsRunner(context: Context) {
     private inner class ConsoleBridge {
         @JavascriptInterface
         fun emit(line: String) {
-            if (line == DONE) onDone?.invoke() else onLine?.invoke(line)
+            when {
+                line == DONE -> onDone?.invoke()
+                line.startsWith(PAUSE) -> onPause?.invoke(line.removePrefix(PAUSE).toIntOrNull() ?: -1)
+                else -> onLine?.invoke(line)
+            }
         }
     }
 
@@ -40,17 +45,21 @@ class JsRunner(context: Context) {
         code: String,
         basePath: String,
         modules: Map<String, String>,
+        breakpoints: Set<Int> = emptySet(),
+        trace: Boolean = false,
         onLine: (String) -> Unit,
-        onDone: () -> Unit
+        onDone: () -> Unit,
+        onPause: (Int) -> Unit = {}
     ) {
         this.onLine = onLine
         this.onDone = onDone
+        this.onPause = onPause
 
         val modulesObj = JSONObject()
         modules.forEach { (k, v) -> modulesObj.put(k, v) }
         val modulesJson = modulesObj.toString().replace("</script>", "<\\/script>")
         val baseJson = JSONObject.quote(basePath)
-        val safe = code.replace("</script>", "<\\/script>")
+        val body = if (breakpoints.isEmpty() && !trace) escape(code) else escape(instrument(code, breakpoints, trace))
 
         val html = """
             <!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
@@ -104,18 +113,23 @@ class JsRunner(context: Context) {
                 argv: [$baseJson],
                 env: {},
                 platform: 'android',
-                version: 'keyide-0.10.0',
+                version: 'keyide-0.15.0',
                 cwd: function () { return $baseJson; }
               };
+              function __bp(n) { throw { __keyide_pause__: n }; }
               var module = { exports: {} };
               var require = function (r) { return __load(__resolve($baseJson, r)); };
 
               try {
                 (function (module, exports, require, console, process) {
-                  $safe
+                  $body
                 })(module, module.exports, require, console, process);
               } catch (e) {
-                KeyIDEConsole.emit('\u2716 ' + (e && e.stack ? e.stack : e));
+                if (e && e.__keyide_pause__) {
+                  KeyIDEConsole.emit('$PAUSE' + e.__keyide_pause__);
+                } else {
+                  KeyIDEConsole.emit('\u2716 ' + (e && e.stack ? e.stack : e));
+                }
               }
               KeyIDEConsole.emit('$DONE');
             })();
@@ -125,7 +139,32 @@ class JsRunner(context: Context) {
         web.loadDataWithBaseURL(null, html, "text/html", "utf-8", null)
     }
 
+    /** Prefija las líneas "seguras" con traza y/o punto de parada. */
+    private fun instrument(code: String, breakpoints: Set<Int>, trace: Boolean): String {
+        val lines = code.split('\n')
+        val sb = StringBuilder()
+        lines.forEachIndexed { i, l ->
+            val n = i + 1
+            val t = l.trimStart()
+            val continuation = t.isEmpty() || t.startsWith(".") || t.startsWith(")") || t.startsWith("]") ||
+                t.startsWith("}") || t.startsWith("else") || t.startsWith("catch") ||
+                t.startsWith("finally") || t.startsWith("&&") || t.startsWith("||") ||
+                t.startsWith("?") || t.startsWith(":") || t.startsWith("*") || t.startsWith("//") ||
+                t.startsWith("/*")
+            if (!continuation) {
+                if (breakpoints.contains(n)) sb.append("__bp(").append(n).append(");")
+                else if (trace) sb.append("emit('\u2192 L").append(n).append("');")
+            }
+            sb.append(l)
+            if (i < lines.size - 1) sb.append('\n')
+        }
+        return sb.toString()
+    }
+
+    private fun escape(code: String) = code.replace("</script>", "<\\/script>")
+
     private companion object {
         const val DONE = "__KEYIDE_DONE__"
+        const val PAUSE = "__KEYIDE_PAUSE__"
     }
 }

@@ -45,6 +45,10 @@ class Settings(context: Context) {
         get() = sp.getString("app_language", "system") ?: "system"
         set(v) = sp.edit().putString("app_language", v).apply()
 
+    var jsTrace: Boolean
+        get() = sp.getBoolean("js_trace", false)
+        set(v) = sp.edit().putBoolean("js_trace", v).apply()
+
     var editorTheme: String
         get() = sp.getString("editor_theme", "onedark") ?: "onedark"
         set(v) = sp.edit().putString("editor_theme", v).apply()
