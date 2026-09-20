@@ -4,6 +4,14 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.17.0] — 2026-09-20
+
+### Cambiado
+- **i18n cerrada al 100%**: migrados a recursos los **36 títulos de la paleta de comandos** y
+  los **diálogos** (Acerca de, Ir a línea, Nuevo fichero/carpeta, Guardar como, Renombrar,
+  Borrar, Insertar snippet, tema de editor/app e idioma) junto con sus botones.
+  Completo en **ES** (`values/`) y **EN** (`values-en/`).
+
 ## [0.16.0] — 2026-09-20
 
 ### Añadido

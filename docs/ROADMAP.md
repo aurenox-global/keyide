@@ -18,8 +18,8 @@
 - [x] **Depurador de Python** (sys.settrace en Chaquopy).
 - [ ] **Node.js real** (npm / módulos nativos).
 - [ ] **Build on-device** (Gradle/Kotlin).
-- [ ] **i18n**: terminar de migrar los textos restantes (paleta/diálogos).
-- [ ] **Release firmado + subir a GitHub** (repo, CI, capturas).
+- [x] **i18n (ES/EN)** completa (paleta, diálogos y paneles).
+- [ ] **Node.js real** (npm / módulos nativos).
 
 ## Medio plazo
 - [ ] **Node.js embebido** (motor JS con `require`/npm) para Run de Node real.

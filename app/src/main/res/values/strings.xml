@@ -76,4 +76,69 @@
     <!-- Vacíos / estados -->
     <string name="empty_no_matches">Sin coincidencias.</string>
     <string name="empty_type_something">Escribe algo.</string>
+
+    <!-- Paleta de comandos -->
+    <string name="cmd_open_folder">Archivo: Abrir carpeta… (SAF)</string>
+    <string name="cmd_new_file">Archivo: Nuevo fichero</string>
+    <string name="cmd_save">Archivo: Guardar</string>
+    <string name="cmd_save_as">Archivo: Guardar como…</string>
+    <string name="cmd_rename">Archivo: Renombrar actual…</string>
+    <string name="cmd_delete">Archivo: Borrar actual…</string>
+    <string name="cmd_close_tab">Archivo: Cerrar pestaña</string>
+    <string name="cmd_undo">Edición: Deshacer</string>
+    <string name="cmd_redo">Edición: Rehacer</string>
+    <string name="cmd_find_replace">Edición: Buscar y reemplazar</string>
+    <string name="cmd_search_project">Edición: Buscar en el proyecto…</string>
+    <string name="cmd_go_def">Edición: Ir a definición</string>
+    <string name="cmd_hover">Edición: Información del símbolo (hover)</string>
+    <string name="cmd_references">Edición: Buscar referencias</string>
+    <string name="cmd_rename_symbol">Edición: Renombrar símbolo…</string>
+    <string name="cmd_format">Edición: Formatear documento</string>
+    <string name="cmd_snippet">Edición: Insertar snippet…</string>
+    <string name="cmd_goto_line">Edición: Ir a línea…</string>
+    <string name="cmd_split">Ver: Dividir editor + vista previa</string>
+    <string name="cmd_preview">Ver: Vista previa</string>
+    <string name="cmd_explorer">Ver: Explorador</string>
+    <string name="cmd_terminal">Ver: Terminal</string>
+    <string name="cmd_keys_bar">Ver: Barra de símbolos</string>
+    <string name="cmd_word_wrap">Ver: Ajuste de línea (wrap)</string>
+    <string name="cmd_editor_theme">Ver: Tema del editor…</string>
+    <string name="cmd_font_size">Ver: Tamaño de fuente…</string>
+    <string name="cmd_app_theme">Ver: Tema de la app (oscuro/claro)…</string>
+    <string name="cmd_language">Ver: Idioma (Sistema / ES / EN)…</string>
+    <string name="cmd_run">Ejecutar: fichero actual</string>
+    <string name="cmd_dbg_run">Depurar: ejecutar con puntos de parada</string>
+    <string name="cmd_dbg_trace">Depurar: activar/desactivar traza</string>
+    <string name="cmd_dbg_clear">Depurar: limpiar puntos de parada</string>
+    <string name="cmd_git_status">Git: Estado</string>
+    <string name="cmd_git_commit">Git: Commit + Push</string>
+    <string name="cmd_ai_open">AI: Abrir copiloto</string>
+    <string name="cmd_ai_settings">AI: Ajustes (proveedor/modelo)</string>
+    <string name="cmd_about">Ayuda: Acerca de</string>
+
+    <!-- Diálogos -->
+    <string name="dlg_about_title">Acerca de KeyIDE</string>
+    <string name="dlg_about_body">KeyIDE · v%1$s\n\nIDE de código para Android.\n\nCreado por Andrés Mag.\n\nEditor con pestañas, autocompletado y diagnósticos · Vista previa web · Run real de JavaScript y Python · Terminal (PTY) · Git nativo (JGit) · Copiloto IA multi-proveedor.\n\nExplorador con acceso a carpetas reales (SAF).\n\n© 2026 Andrés Mag</string>
+    <string name="dlg_close">Cerrar</string>
+    <string name="dlg_open">Abrir</string>
+    <string name="dlg_cancel">Cancelar</string>
+    <string name="dlg_goto_line">Ir a línea</string>
+    <string name="dlg_go">Ir</string>
+    <string name="dlg_new_file">Nuevo fichero en %1$s</string>
+    <string name="dlg_create">Crear</string>
+    <string name="dlg_new_folder">Nueva carpeta</string>
+    <string name="dlg_save_as">Guardar como (en %1$s)</string>
+    <string name="dlg_rename">Renombrar</string>
+    <string name="dlg_rename_named">Renombrar «%1$s»</string>
+    <string name="dlg_rename_msg">Se renombran todas las apariciones en este documento.</string>
+    <string name="dlg_delete_named">Borrar %1$s</string>
+    <string name="dlg_delete_msg">¿Seguro que quieres borrar «%1$s»? No se puede deshacer.</string>
+    <string name="dlg_delete">Borrar</string>
+    <string name="dlg_snippets">Insertar snippet · %1$s</string>
+    <string name="dlg_theme_app">Tema de la app</string>
+    <string name="dlg_theme_editor">Tema del editor</string>
+    <string name="dlg_language">Idioma</string>
+    <string name="opt_dark">Oscuro</string>
+    <string name="opt_light">Claro</string>
+    <string name="opt_system">Sistema</string>
 </resources>

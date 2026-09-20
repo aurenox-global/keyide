@@ -271,13 +271,13 @@ class MainActivity : AppCompatActivity() {
             setPadding(dp(20), dp(12), dp(20), dp(12))
         }
         AlertDialog.Builder(this)
-            .setTitle("Nuevo fichero en ${pathLabel()}")
+            .setTitle(getString(R.string.dlg_new_file, pathLabel()))
             .setView(input)
-            .setPositiveButton("Crear") { _, _ ->
+            .setPositiveButton(getString(R.string.dlg_create)) { _, _ ->
                 val name = input.text?.toString()?.trim().orEmpty()
                 if (name.isNotEmpty()) createNewFile(name)
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -307,9 +307,9 @@ class MainActivity : AppCompatActivity() {
             setPadding(dp(20), dp(12), dp(20), dp(12))
         }
         AlertDialog.Builder(this)
-            .setTitle("Nueva carpeta")
+            .setTitle(getString(R.string.dlg_new_folder))
             .setView(input)
-            .setPositiveButton("Crear") { _, _ ->
+            .setPositiveButton(getString(R.string.dlg_create)) { _, _ ->
                 val name = input.text?.toString()?.trim().orEmpty()
                 if (name.isEmpty()) return@setPositiveButton
                 if (safMode) {
@@ -319,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 refreshExplorer()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -779,26 +779,10 @@ class MainActivity : AppCompatActivity() {
     // ── Acerca de ─────────────────────────────────────────────────────────
 
     private fun showAbout() {
-        val msg = """
-            KeyIDE · v${BuildConfig.VERSION_NAME}
-
-            IDE de código para Android.
-
-            Creado por Andrés Mag.
-
-            Editor con pestañas, autocompletado y diagnósticos · Vista previa web
-            · Run real de JavaScript y Python (intérprete embebido) · Terminal
-            integrado · Git nativo (JGit) · Copiloto IA multi-proveedor
-            (DeepSeek, OpenAI, Claude, Qwen, Kimi, GLM o modelo local llama.cpp).
-
-            Explorador con acceso a carpetas reales del dispositivo (SAF).
-
-            (C) 2026 Andrés Mag
-        """.trimIndent()
         AlertDialog.Builder(this)
-            .setTitle("Acerca de KeyIDE")
-            .setMessage(msg)
-            .setPositiveButton("Cerrar", null)
+            .setTitle(getString(R.string.dlg_about_title))
+            .setMessage(getString(R.string.dlg_about_body, BuildConfig.VERSION_NAME))
+            .setPositiveButton(getString(R.string.dlg_close), null)
             .show()
     }
 
@@ -806,43 +790,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPalette() {
         val cmds = listOf(
-            CommandPalette.Cmd("Archivo: Abrir carpeta… (SAF)") { pickFolder.launch(null) },
-            CommandPalette.Cmd("Archivo: Nuevo fichero") { promptNewFile() },
-            CommandPalette.Cmd("Archivo: Guardar") { saveCurrent() },
-            CommandPalette.Cmd("Archivo: Guardar como…") { saveAs() },
-            CommandPalette.Cmd("Archivo: Renombrar actual…") { renameCurrent() },
-            CommandPalette.Cmd("Archivo: Borrar actual…") { deleteCurrent() },
-            CommandPalette.Cmd("Archivo: Cerrar pestaña") { if (active >= 0) closeTab(active) },
-            CommandPalette.Cmd("Edición: Deshacer") { b.editor.undo() },
-            CommandPalette.Cmd("Edición: Rehacer") { b.editor.redo() },
-            CommandPalette.Cmd("Edición: Buscar y reemplazar") { openSheet(SHEET_FIND) },
-            CommandPalette.Cmd("Edición: Buscar en el proyecto…") { openSheet(SHEET_SEARCH) },
-            CommandPalette.Cmd("Edición: Ir a definición") { goToDefinition() },
-            CommandPalette.Cmd("Edición: Información del símbolo (hover)") { showHover() },
-            CommandPalette.Cmd("Edición: Buscar referencias") { showReferences() },
-            CommandPalette.Cmd("Edición: Renombrar símbolo…") { renameSymbol() },
-            CommandPalette.Cmd("Edición: Formatear documento") { formatDocument() },
-            CommandPalette.Cmd("Edición: Insertar snippet…") { showSnippets() },
-            CommandPalette.Cmd("Ver: Dividir editor + vista previa") { toggleSplit() },
-            CommandPalette.Cmd("Ver: Vista previa") { openPreview() },
-            CommandPalette.Cmd("Ver: Explorador") { openSheet(SHEET_FILES) },
-            CommandPalette.Cmd("Ver: Terminal") { openSheet(SHEET_TERMINAL) },
-            CommandPalette.Cmd("Ver: Barra de símbolos") { toggleKeys() },
-            CommandPalette.Cmd("Ver: Ajuste de línea (wrap)") { toggleWordWrap() },
-            CommandPalette.Cmd("Ver: Tema del editor…") { showThemeDialog() },
-            CommandPalette.Cmd("Ver: Tema de la app (oscuro/claro)…") { showAppThemeDialog() },
-            CommandPalette.Cmd("Ver: Idioma (Sistema / ES / EN)…") { showLanguageDialog() },
-            CommandPalette.Cmd("Ver: Tamaño de fuente…") { showFontSizeDialog() },
-            CommandPalette.Cmd("Edición: Ir a línea…") { goToLineDialog() },
-            CommandPalette.Cmd("Ejecutar: fichero actual") { runCurrent() },
-            CommandPalette.Cmd("Depurar: ejecutar con puntos de parada") { runCurrent() },
-            CommandPalette.Cmd("Depurar: activar/desactivar traza") { toggleJsTrace() },
-            CommandPalette.Cmd("Depurar: limpiar puntos de parada") { b.editor.clearBreakpoints(); toast("Puntos de parada borrados") },
-            CommandPalette.Cmd("Git: Estado") { openSheet(SHEET_GIT) },
-            CommandPalette.Cmd("Git: Commit + Push") { openSheet(SHEET_GIT); gitPanel?.post { gitPanel?.runCommit() } },
-            CommandPalette.Cmd("AI: Abrir copiloto") { openSheet(SHEET_AI) },
-            CommandPalette.Cmd("AI: Ajustes (proveedor/modelo)") { openSheet(SHEET_SETTINGS) },
-            CommandPalette.Cmd("Ayuda: Acerca de") { showAbout() }
+            CommandPalette.Cmd(getString(R.string.cmd_open_folder)) { pickFolder.launch(null) },
+            CommandPalette.Cmd(getString(R.string.cmd_new_file)) { promptNewFile() },
+            CommandPalette.Cmd(getString(R.string.cmd_save)) { saveCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_save_as)) { saveAs() },
+            CommandPalette.Cmd(getString(R.string.cmd_rename)) { renameCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_delete)) { deleteCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_close_tab)) { if (active >= 0) closeTab(active) },
+            CommandPalette.Cmd(getString(R.string.cmd_undo)) { b.editor.undo() },
+            CommandPalette.Cmd(getString(R.string.cmd_redo)) { b.editor.redo() },
+            CommandPalette.Cmd(getString(R.string.cmd_find_replace)) { openSheet(SHEET_FIND) },
+            CommandPalette.Cmd(getString(R.string.cmd_search_project)) { openSheet(SHEET_SEARCH) },
+            CommandPalette.Cmd(getString(R.string.cmd_go_def)) { goToDefinition() },
+            CommandPalette.Cmd(getString(R.string.cmd_hover)) { showHover() },
+            CommandPalette.Cmd(getString(R.string.cmd_references)) { showReferences() },
+            CommandPalette.Cmd(getString(R.string.cmd_rename_symbol)) { renameSymbol() },
+            CommandPalette.Cmd(getString(R.string.cmd_format)) { formatDocument() },
+            CommandPalette.Cmd(getString(R.string.cmd_snippet)) { showSnippets() },
+            CommandPalette.Cmd(getString(R.string.cmd_split)) { toggleSplit() },
+            CommandPalette.Cmd(getString(R.string.cmd_preview)) { openPreview() },
+            CommandPalette.Cmd(getString(R.string.cmd_explorer)) { openSheet(SHEET_FILES) },
+            CommandPalette.Cmd(getString(R.string.cmd_terminal)) { openSheet(SHEET_TERMINAL) },
+            CommandPalette.Cmd(getString(R.string.cmd_keys_bar)) { toggleKeys() },
+            CommandPalette.Cmd(getString(R.string.cmd_word_wrap)) { toggleWordWrap() },
+            CommandPalette.Cmd(getString(R.string.cmd_editor_theme)) { showThemeDialog() },
+            CommandPalette.Cmd(getString(R.string.cmd_app_theme)) { showAppThemeDialog() },
+            CommandPalette.Cmd(getString(R.string.cmd_language)) { showLanguageDialog() },
+            CommandPalette.Cmd(getString(R.string.cmd_font_size)) { showFontSizeDialog() },
+            CommandPalette.Cmd(getString(R.string.cmd_goto_line)) { goToLineDialog() },
+            CommandPalette.Cmd(getString(R.string.cmd_run)) { runCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_dbg_run)) { runCurrent() },
+            CommandPalette.Cmd(getString(R.string.cmd_dbg_trace)) { toggleJsTrace() },
+            CommandPalette.Cmd(getString(R.string.cmd_dbg_clear)) { b.editor.clearBreakpoints(); toast("Puntos de parada borrados") },
+            CommandPalette.Cmd(getString(R.string.cmd_git_status)) { openSheet(SHEET_GIT) },
+            CommandPalette.Cmd(getString(R.string.cmd_git_commit)) { openSheet(SHEET_GIT); gitPanel?.post { gitPanel?.runCommit() } },
+            CommandPalette.Cmd(getString(R.string.cmd_ai_open)) { openSheet(SHEET_AI) },
+            CommandPalette.Cmd(getString(R.string.cmd_ai_settings)) { openSheet(SHEET_SETTINGS) },
+            CommandPalette.Cmd(getString(R.string.cmd_about)) { showAbout() }
         )
         CommandPalette.show(this, cmds)
     }
@@ -861,12 +845,12 @@ class MainActivity : AppCompatActivity() {
             setPadding(dp(20), dp(12), dp(20), dp(12))
         }
         AlertDialog.Builder(this)
-            .setTitle("Ir a línea")
+            .setTitle(getString(R.string.dlg_goto_line))
             .setView(input)
-            .setPositiveButton("Ir") { _, _ ->
+            .setPositiveButton(getString(R.string.dlg_go)) { _, _ ->
                 input.text?.toString()?.toIntOrNull()?.let { b.editor.goToLine(it) }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -935,9 +919,9 @@ class MainActivity : AppCompatActivity() {
             setPadding(dp(20), dp(12), dp(20), dp(12))
         }
         AlertDialog.Builder(this)
-            .setTitle("Guardar como (en ${pathLabel()})")
+            .setTitle(getString(R.string.dlg_save_as, pathLabel()))
             .setView(input)
-            .setPositiveButton("Guardar") { _, _ ->
+            .setPositiveButton(getString(R.string.action_save)) { _, _ ->
                 val name = input.text?.toString()?.trim().orEmpty()
                 if (name.isEmpty()) return@setPositiveButton
                 if (safMode) {
@@ -955,7 +939,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 refreshExplorer()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -963,9 +947,9 @@ class MainActivity : AppCompatActivity() {
         val d = currentDoc ?: return
         val input = EditText(this).apply { setText(d.name); setPadding(dp(20), dp(12), dp(20), dp(12)) }
         AlertDialog.Builder(this)
-            .setTitle("Renombrar")
+            .setTitle(getString(R.string.dlg_rename))
             .setView(input)
-            .setPositiveButton("Renombrar") { _, _ ->
+            .setPositiveButton(getString(R.string.dlg_rename)) { _, _ ->
                 val newName = input.text?.toString()?.trim().orEmpty()
                 if (newName.isEmpty() || newName == d.name) return@setPositiveButton
                 val uriNow = d.uri
@@ -993,16 +977,16 @@ class MainActivity : AppCompatActivity() {
                 }
                 renderTabs(); updateTitle(); refreshExplorer()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
     private fun deleteCurrent() {
         val d = currentDoc ?: return
         AlertDialog.Builder(this)
-            .setTitle("Borrar ${d.name}")
-            .setMessage("¿Seguro que quieres borrar \"${d.name}\"? No se puede deshacer.")
-            .setPositiveButton("Borrar") { _, _ ->
+            .setTitle(getString(R.string.dlg_delete_named, d.name))
+            .setMessage(getString(R.string.dlg_delete_msg, d.name))
+            .setPositiveButton(getString(R.string.dlg_delete)) { _, _ ->
                 val duri = d.uri
                 val ok = runCatching {
                     if (duri != null) DocumentFile.fromSingleUri(this, duri)?.delete() ?: false
@@ -1015,7 +999,7 @@ class MainActivity : AppCompatActivity() {
                     toast("Borrado")
                 } else toast("No se pudo borrar")
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -1068,10 +1052,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLanguageDialog() {
-        val opts = arrayOf("Sistema", "Español", "English")
+        val opts = arrayOf(getString(R.string.opt_system), "Español", "English")
         val cur = when (settings.appLanguage) { "es" -> 1; "en" -> 2; else -> 0 }
         AlertDialog.Builder(this)
-            .setTitle("Idioma")
+            .setTitle(getString(R.string.dlg_language))
             .setSingleChoiceItems(opts, cur) { dialog, which ->
                 settings.appLanguage = when (which) { 1 -> "es"; 2 -> "en"; else -> "system" }
                 dialog.dismiss()
@@ -1081,10 +1065,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAppThemeDialog() {
-        val opts = arrayOf("Oscuro", "Claro", "Sistema")
+        val opts = arrayOf(getString(R.string.opt_dark), getString(R.string.opt_light), getString(R.string.opt_system))
         val cur = when (settings.appTheme) { "light" -> 1; "system" -> 2; else -> 0 }
         AlertDialog.Builder(this)
-            .setTitle("Tema de la app")
+            .setTitle(getString(R.string.dlg_theme_app))
             .setSingleChoiceItems(opts, cur) { dialog, which ->
                 settings.appTheme = when (which) { 1 -> "light"; 2 -> "system"; else -> "dark" }
                 dialog.dismiss()
@@ -1098,7 +1082,7 @@ class MainActivity : AppCompatActivity() {
         val labels = themes.map { it.label }.toTypedArray()
         val current = themes.indexOfFirst { it.id == settings.editorTheme }.coerceAtLeast(0)
         AlertDialog.Builder(this)
-            .setTitle("Tema del editor")
+            .setTitle(getString(R.string.dlg_theme_editor))
             .setSingleChoiceItems(labels, current) { dialog, which ->
                 settings.editorTheme = themes[which].id
                 applyEditorPrefs()
@@ -1127,9 +1111,9 @@ class MainActivity : AppCompatActivity() {
         val snips = Snippets.forLanguage(b.editor.language)
         val labels = snips.map { it.label }.toTypedArray()
         AlertDialog.Builder(this)
-            .setTitle("Insertar snippet · ${b.editor.language}")
+            .setTitle(getString(R.string.dlg_snippets, b.editor.language))
             .setItems(labels) { _, which -> b.editor.insert(snips[which].code) }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 
@@ -1147,8 +1131,8 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle("\u2139 $word")
                 .setMessage("Definición en este fichero · línea $line\n\n$code")
-                .setPositiveButton("Ir") { _, _ -> b.editor.goToLine(line) }
-                .setNegativeButton("Cerrar", null)
+                .setPositiveButton(getString(R.string.dlg_go)) { _, _ -> b.editor.goToLine(line) }
+                .setNegativeButton(getString(R.string.dlg_close), null)
                 .show()
             return
         }
@@ -1157,8 +1141,8 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle("\u2139 $word")
                 .setMessage("Definición en ${hit.name} · línea ${hit.line}\n\n${hit.preview}")
-                .setPositiveButton("Abrir") { _, _ -> openSearchResult(hit) }
-                .setNegativeButton("Cerrar", null)
+                .setPositiveButton(getString(R.string.dlg_open)) { _, _ -> openSearchResult(hit) }
+                .setNegativeButton(getString(R.string.dlg_close), null)
                 .show()
         } else {
             toast("Sin información para «$word»")
@@ -1181,9 +1165,9 @@ class MainActivity : AppCompatActivity() {
         }
         AlertDialog.Builder(this)
             .setTitle("Renombrar «$word»")
-            .setMessage("Se renombran todas las apariciones en este documento.")
+            .setMessage(getString(R.string.dlg_rename_msg))
             .setView(input)
-            .setPositiveButton("Renombrar") { _, _ ->
+            .setPositiveButton(getString(R.string.dlg_rename)) { _, _ ->
                 val nn = input.text?.toString()?.trim().orEmpty()
                 if (nn.isEmpty() || nn == word) return@setPositiveButton
                 val t = b.editor.text()
@@ -1193,7 +1177,7 @@ class MainActivity : AppCompatActivity() {
                 b.editor.applyText(rx.replace(t, nn))
                 toast("Renombradas $count apariciones")
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dlg_cancel), null)
             .show()
     }
 

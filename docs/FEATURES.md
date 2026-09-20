@@ -63,7 +63,7 @@
 
 ## Apariencia y sesión
 - **Tema de la app**: Oscuro, Claro o Sistema (afecta a todos los paneles).
-- **Idioma**: Sistema, Español o English.
+- **Idioma**: Sistema, Español o English (i18n completa ES/EN).
 - **Temas del editor**: One Dark, Monokai y Claro (GitHub).
 - **Tamaño de fuente** 10–24sp.
 - **Persistencia**: se restauran las pestañas abiertas y la activa al reabrir.

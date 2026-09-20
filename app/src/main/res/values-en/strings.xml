@@ -76,4 +76,69 @@
     <!-- Empty / states -->
     <string name="empty_no_matches">No matches.</string>
     <string name="empty_type_something">Type something.</string>
+
+    <!-- Command palette -->
+    <string name="cmd_open_folder">File: Open folder… (SAF)</string>
+    <string name="cmd_new_file">File: New file</string>
+    <string name="cmd_save">File: Save</string>
+    <string name="cmd_save_as">File: Save as…</string>
+    <string name="cmd_rename">File: Rename current…</string>
+    <string name="cmd_delete">File: Delete current…</string>
+    <string name="cmd_close_tab">File: Close tab</string>
+    <string name="cmd_undo">Edit: Undo</string>
+    <string name="cmd_redo">Edit: Redo</string>
+    <string name="cmd_find_replace">Edit: Find and replace</string>
+    <string name="cmd_search_project">Edit: Search in project…</string>
+    <string name="cmd_go_def">Edit: Go to definition</string>
+    <string name="cmd_hover">Edit: Symbol info (hover)</string>
+    <string name="cmd_references">Edit: Find references</string>
+    <string name="cmd_rename_symbol">Edit: Rename symbol…</string>
+    <string name="cmd_format">Edit: Format document</string>
+    <string name="cmd_snippet">Edit: Insert snippet…</string>
+    <string name="cmd_goto_line">Edit: Go to line…</string>
+    <string name="cmd_split">View: Split editor + preview</string>
+    <string name="cmd_preview">View: Preview</string>
+    <string name="cmd_explorer">View: Explorer</string>
+    <string name="cmd_terminal">View: Terminal</string>
+    <string name="cmd_keys_bar">View: Symbol bar</string>
+    <string name="cmd_word_wrap">View: Word wrap</string>
+    <string name="cmd_editor_theme">View: Editor theme…</string>
+    <string name="cmd_font_size">View: Font size…</string>
+    <string name="cmd_app_theme">View: App theme (dark/light)…</string>
+    <string name="cmd_language">View: Language (System / ES / EN)…</string>
+    <string name="cmd_run">Run: current file</string>
+    <string name="cmd_dbg_run">Debug: run with breakpoints</string>
+    <string name="cmd_dbg_trace">Debug: toggle trace</string>
+    <string name="cmd_dbg_clear">Debug: clear breakpoints</string>
+    <string name="cmd_git_status">Git: Status</string>
+    <string name="cmd_git_commit">Git: Commit + Push</string>
+    <string name="cmd_ai_open">AI: Open copilot</string>
+    <string name="cmd_ai_settings">AI: Settings (provider/model)</string>
+    <string name="cmd_about">Help: About</string>
+
+    <!-- Dialogs -->
+    <string name="dlg_about_title">About KeyIDE</string>
+    <string name="dlg_about_body">KeyIDE · v%1$s\n\nCode IDE for Android.\n\nCreated by Andrés Mag.\n\nTabbed editor, autocomplete and diagnostics · Web preview · Real JavaScript and Python run · Terminal (PTY) · Native Git (JGit) · Multi-provider AI copilot.\n\nExplorer with access to real device folders (SAF).\n\n© 2026 Andrés Mag</string>
+    <string name="dlg_close">Close</string>
+    <string name="dlg_open">Open</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_goto_line">Go to line</string>
+    <string name="dlg_go">Go</string>
+    <string name="dlg_new_file">New file in %1$s</string>
+    <string name="dlg_create">Create</string>
+    <string name="dlg_new_folder">New folder</string>
+    <string name="dlg_save_as">Save as (in %1$s)</string>
+    <string name="dlg_rename">Rename</string>
+    <string name="dlg_rename_named">Rename “%1$s”</string>
+    <string name="dlg_rename_msg">All occurrences in this document will be renamed.</string>
+    <string name="dlg_delete_named">Delete %1$s</string>
+    <string name="dlg_delete_msg">Delete “%1$s”? This cannot be undone.</string>
+    <string name="dlg_delete">Delete</string>
+    <string name="dlg_snippets">Insert snippet · %1$s</string>
+    <string name="dlg_theme_app">App theme</string>
+    <string name="dlg_theme_editor">Editor theme</string>
+    <string name="dlg_language">Language</string>
+    <string name="opt_dark">Dark</string>
+    <string name="opt_light">Light</string>
+    <string name="opt_system">System</string>
 </resources>
