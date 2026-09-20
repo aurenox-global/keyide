@@ -43,7 +43,13 @@ deslizables; con pantalla ancha se activa el **split editor | vista previa**.
 
 ## 📱 Capturas
 
-_(añadir capturas en `docs/screenshots/`)_
+| Editor | Split + vista previa | Barra de teclas |
+|---|---|---|
+| <img src="docs/screenshots/01-editor.jpg" width="200"> | <img src="docs/screenshots/02-split-preview.jpg" width="200"> | <img src="docs/screenshots/03-teclas.jpg" width="200"> |
+
+| Explorador (SAF) | Terminal | Git | Copiloto IA |
+|---|---|---|---|
+| <img src="docs/screenshots/04-explorador-saf.jpg" width="200"> | <img src="docs/screenshots/05-terminal.jpg" width="200"> | <img src="docs/screenshots/06-git.jpg" width="200"> | <img src="docs/screenshots/07-copiloto.jpg" width="200"> |
 
 ## 🚀 Instalar
 

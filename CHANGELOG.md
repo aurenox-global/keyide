@@ -20,6 +20,8 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 
 ### Publicación
 - **Web del proyecto** (`docs/index.html`, lista para GitHub Pages) con toda la documentación.
+- **Capturas reales** en `docs/screenshots/` (editor, split+preview, teclas, explorador SAF,
+  terminal, Git, copiloto), integradas en la web y en el README.
 - **README** para GitHub con badges, tabla de funciones y enlaces.
 - **Release firmado**: `keystore/keyide-release.jks` (local, *gitignored*) y firma configurada
   vía `keystore.properties`.
