@@ -158,20 +158,21 @@ class MainActivity : AppCompatActivity() {
 
     // ── Insets ────────────────────────────────────────────────────────────
 
-    private var keysBarWasVisible = false
     private var topInset = 0
     private var navInset = 0
+    private var imeInset = 0
 
     /**
-     * Insets/teclado. Para el teclado usamos la **altura real visible**
-     * (`getWindowVisibleDisplayFrame`), que da el solapamiento exacto sin doble ajuste
-     * (funciona igual si el sistema redimensiona la ventana o si no).
+     * La barra inferior va ANCLADA abajo (bottomStack, fuera de rootColumn) para que
+     * **no se mueva** al abrir el teclado. El hueco del teclado se le da al editor.
+     * Se mide el solapamiento real (frames + insets) para no depender de una sola fuente.
      */
     private fun applyInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(b.root) { _, insets ->
             val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             topInset = sys.top
             navInset = sys.bottom
+            imeInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
             updateBottomPadding()
             insets
         }
@@ -183,30 +184,24 @@ class MainActivity : AppCompatActivity() {
         if (!::settings.isInitialized) return
         val r = Rect()
         b.root.getWindowVisibleDisplayFrame(r)
-        val overlap = (b.root.height - r.bottom).coerceAtLeast(0)
-        val bottom = maxOf(navInset, overlap)
-        b.rootColumn.setPadding(0, topInset, 0, bottom)
-        b.sheet.setPadding(0, 0, 0, bottom)
-
+        val byFrame = (b.root.height - r.bottom).coerceAtLeast(0)
+        val overlap = maxOf(byFrame, imeInset)
         val d = resources.displayMetrics.density
         val imeOpen = overlap > navInset + (80 * d).toInt()
+        val barH = b.bottomStack.height
 
-        // Barra de símbolos: se oculta al escribir (es redundante con el teclado).
-        if (imeOpen) {
-            if (b.keysBar.visibility == View.VISIBLE) {
-                keysBarWasVisible = true
-                b.keysBar.visibility = View.GONE
-            }
-        } else if (keysBarWasVisible) {
-            keysBarWasVisible = false
-            b.keysBar.visibility = View.VISIBLE
-        }
+        // Barra FIJA abajo (solo se aparta de la barra de navegación del sistema).
+        b.bottomStack.setPadding(0, 0, 0, navInset)
 
-        // Interruptor de seguridad: ocultar también la barra de navegación al escribir.
+        // El editor recibe el hueco: reserva la barra (cerrado) o el teclado (abierto).
+        val bottom = if (imeOpen) maxOf(overlap, barH + navInset) else barH + navInset
+        b.rootColumn.setPadding(0, topInset, 0, bottom)
+        b.sheet.setPadding(0, 0, 0, maxOf(navInset, overlap))
+
         if (settings.hideBarWhileTyping) {
-            b.bottomNav.visibility = if (imeOpen) View.GONE else View.VISIBLE
-        } else if (b.bottomNav.visibility != View.VISIBLE) {
-            b.bottomNav.visibility = View.VISIBLE
+            b.bottomStack.visibility = if (imeOpen) View.GONE else View.VISIBLE
+        } else if (b.bottomStack.visibility != View.VISIBLE) {
+            b.bottomStack.visibility = View.VISIBLE
         }
     }
 

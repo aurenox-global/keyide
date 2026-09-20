@@ -30,8 +30,8 @@ android {
         applicationId = "com.keyide.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 22
-        versionName = "0.19.2"
+        versionCode = 23
+        versionName = "0.19.3"
         resourceConfigurations += listOf("es", "en")
 
         ndk {

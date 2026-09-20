@@ -64,6 +64,15 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomStack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
         <HorizontalScrollView
             android:id="@+id/keysBar"
             android:layout_width="match_parent"

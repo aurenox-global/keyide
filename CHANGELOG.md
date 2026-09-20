@@ -4,6 +4,17 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.19.3] — 2026-09-21
+
+### Cambiado
+- **Barra inferior FIJA (ya no se mueve con el teclado)** — petición de Andrés. La barra
+  (Ficheros · Teclas · Run · Git · AI) ahora va **anclada abajo** (`bottomStack`, fuera del
+  contenedor que se encoge) y el teclado **ya no redimensiona la ventana**
+  (`windowSoftInputMode="adjustNothing"`).
+  Resultado: al abrir el teclado, la barra **se queda donde está** (el teclado la tapa) y el
+  hueco se le da **solo al editor**, que mantiene visible la línea/cursor donde escribes.
+  El solapamiento se mide combinando el *frame* visible y los *insets*.
+
 ## [0.19.2] — 2026-09-21
 
 ### Corregido
