@@ -4,6 +4,16 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y
 [Versionado semántico](https://semver.org/lang/es/).
 
+## [0.16.0] — 2026-09-20
+
+### Añadido
+- **Depurador de Python**: los mismos **puntos de parada** (toque en el margen) y **traza**,
+  implementados con `sys.settrace` en el intérprete embebido (`runner.execute_debug`).
+  La ejecución se detiene en la línea marcada de tu código (también dentro de funciones).
+
+### Notas
+- JS y Python comparten la traza y los puntos de parada (paleta: *Depurar: …*).
+
 ## [0.15.0] — 2026-09-20
 
 ### Añadido

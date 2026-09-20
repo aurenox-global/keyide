@@ -39,7 +39,7 @@ deslizables; con pantalla ancha se activa el **split editor | vista previa**.
 | **IA** | DeepSeek, OpenAI/ChatGPT, Anthropic/Claude, Qwen, Kimi, GLM y **modelo local llama.cpp**. |
 | **Ficheros** | Explorador con acceso a **carpetas reales del dispositivo (SAF)**: abrir, crear ficheros y carpetas. |
 | **Búsqueda** | Buscar y reemplazar en el documento y en el proyecto; **ir a definición**, hover, referencias y renombrar. |
-| **Depurador JS** | **Puntos de parada** (toque en el margen) y **traza** de líneas ejecutadas. |
+| **Depurador** | **Puntos de parada** (toque en el margen) y **traza** para **JavaScript y Python**. |
 | **Terminal** | **PTY real** (apps interactivas) con fallback a sesión persistente. |
 | **Apariencia** | **Tema global** (oscuro/claro/sistema), **idioma ES/EN**, temas del editor y **persistencia de sesión**. |
 

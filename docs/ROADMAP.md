@@ -15,7 +15,7 @@
 - [x] **i18n (ES/EN)** + selector de idioma (quedan algunos textos por migrar).
 - [x] **PTY real** (control de trabajos, apps de pantalla completa) — experimental, con fallback.
 - [x] **Depurador de JavaScript** (puntos de parada + traza).
-- [ ] **Depurador de Python** (hooks en Chaquopy).
+- [x] **Depurador de Python** (sys.settrace en Chaquopy).
 - [ ] **Node.js real** (npm / módulos nativos).
 - [ ] **Build on-device** (Gradle/Kotlin).
 - [ ] **i18n**: terminar de migrar los textos restantes (paleta/diálogos).

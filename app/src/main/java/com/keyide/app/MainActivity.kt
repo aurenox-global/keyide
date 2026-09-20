@@ -753,8 +753,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun runPy(d: Doc) {
         if (PythonBridge.available()) {
-            terminalPanel?.appendOutput("$ python3 ${d.name}   (intérprete embebido)")
-            PythonBridge.run(b.editor.text()) { out ->
+            val bp = b.editor.breakpoints.toSet()
+            val trace = settings.jsTrace
+            val extra = buildString {
+                if (bp.isNotEmpty()) append(" · \uD83D\uDC1E ${bp.size} puntos de parada")
+                if (trace) append(" · traza")
+            }
+            terminalPanel?.appendOutput("$ python3 ${d.name}   (intérprete embebido$extra)")
+            if (bp.isEmpty() && !trace) {
+                terminalPanel?.appendOutput("\u2139 Toca el margen izquierdo para poner/quitar puntos de parada.")
+            }
+            PythonBridge.run(b.editor.text(), bp, trace) { out ->
                 terminalPanel?.appendOutput(if (out.isBlank()) "(sin salida)" else out.trimEnd())
                 terminalPanel?.appendOutput("\u2714 fin de la ejecución")
             }

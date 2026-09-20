@@ -15,13 +15,20 @@ object PythonBridge {
         false
     }
 
-    fun run(code: String, onResult: (String) -> Unit) {
+    fun run(
+        code: String,
+        breakpoints: Set<Int> = emptySet(),
+        trace: Boolean = false,
+        onResult: (String) -> Unit
+    ) {
         Thread {
             val out = try {
-                Python.getInstance()
-                    .getModule("runner")
-                    .callAttr("execute", code)
-                    .toString()
+                val mod = Python.getInstance().getModule("runner")
+                if (breakpoints.isEmpty() && !trace) {
+                    mod.callAttr("execute", code).toString()
+                } else {
+                    mod.callAttr("execute_debug", code, breakpoints.toList(), trace).toString()
+                }
             } catch (e: Throwable) {
                 "\u2716 ${e.javaClass.simpleName}: ${e.message ?: ""}"
             }
