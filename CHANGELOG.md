@@ -18,6 +18,13 @@ Todos los cambios relevantes de KeyIDE. Formato basado en
 ### Cambiado
 - El terminal muestra cuántos módulos locales carga al ejecutar JS.
 
+### Publicación
+- **Web del proyecto** (`docs/index.html`, lista para GitHub Pages) con toda la documentación.
+- **README** para GitHub con badges, tabla de funciones y enlaces.
+- **Release firmado**: `keystore/keyide-release.jks` (local, *gitignored*) y firma configurada
+  vía `keystore.properties`.
+- Script `keyide-publish.sh` para republicar código + release con un comando.
+
 ## [0.9.0] — 2026-09-20
 
 ### Añadido

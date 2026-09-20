@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KeyIDE · IDE de código para Android</title>
+<meta name="description" content="KeyIDE: IDE de código ligero para Android con editor con pestañas, vista previa web, ejecución real de JavaScript y Python, terminal, Git y copiloto de IA. Creado por Andrés Mag.">
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2128; --line:#30363d;
+  --fg:#e6edf3; --mut:#8b949e; --acc:#58a6ff; --grn:#3fb950; --yel:#d29922;
+  --pur:#bc8cff; --red:#f85149;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.65}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+code{background:var(--panel2);padding:2px 6px;border-radius:5px;
+  font-family:'DejaVu Sans Mono',Menlo,Consolas,monospace;font-size:.9em}
+pre{background:#05080d;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto}
+pre code{background:none;padding:0}
+nav{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:18px;
+  padding:12px 20px;flex-wrap:wrap}
+nav b{font-size:16px;letter-spacing:.3px}
+nav b span{color:var(--acc)}
+nav a{color:var(--mut);font-size:13.5px}
+nav a:hover{color:var(--fg);text-decoration:none}
+header.hero{max-width:1080px;margin:0 auto;padding:64px 20px 34px;text-align:center}
+header.hero h1{font-size:clamp(30px,6vw,54px);margin:0 0 10px;line-height:1.1}
+header.hero h1 .g{background:linear-gradient(90deg,#58a6ff,#bc8cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+header.hero p.claim{color:var(--mut);font-size:clamp(15px,2.4vw,19px);max-width:720px;margin:0 auto 22px}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 22px;border-radius:10px;font-weight:600;font-size:14.5px;border:1px solid var(--line)}
+.btn.primary{background:var(--acc);color:#06121f;border-color:var(--acc)}
+.btn.primary:hover{filter:brightness(1.08);text-decoration:none}
+.btn.ghost{background:var(--panel);color:var(--fg)}
+.btn.ghost:hover{background:var(--panel2);text-decoration:none}
+.author{margin-top:18px;color:var(--mut);font-size:13.5px}
+section{max-width:1080px;margin:0 auto;padding:38px 20px;border-top:1px solid var(--line)}
+section h2{font-size:23px;margin:0 0 6px}
+section h2 .n{color:var(--amber,#d29922);font-size:13px;display:block;letter-spacing:2px;color:var(--mut);text-transform:uppercase;font-weight:600}
+section p.lead{color:var(--mut);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{margin:0 0 8px;font-size:16px}
+.card p{margin:0;color:var(--mut);font-size:13.5px}
+.card .ico{font-size:22px}
+ul.feat{list-style:none;padding:0;margin:16px 0 0}
+ul.feat li{padding:10px 0 10px 30px;border-bottom:1px dashed var(--line);position:relative;font-size:14.5px}
+ul.feat li:before{content:"✔";position:absolute;left:0;color:var(--grn)}
+ul.todo li:before{content:"○";color:var(--yel)}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;white-space:nowrap}
+th{background:var(--panel2);color:var(--mut);font-weight:600}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:20px}
+.shot{background:var(--panel2);border:1px dashed var(--line);border-radius:12px;
+  aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:13px}
+.note{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.35);
+  border-radius:10px;padding:12px 16px;color:#e3c07b;font-size:13.5px;margin-top:16px}
+footer{border-top:1px solid var(--line);padding:30px 20px 60px;text-align:center;color:var(--mut);font-size:13.5px}
+.chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--mut);
+  border-radius:999px;padding:3px 11px;font-size:12px;margin:3px 5px 3px 0}
+.log{border-left:2px solid var(--line);padding-left:18px;margin-top:20px}
+.log h3{margin:18px 0 4px;font-size:15px}
+.log small{color:var(--mut)}
+.log ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <b>Key<span>IDE</span></b>
+  <a href="#funciones">Funciones</a>
+  <a href="#capturas">Capturas</a>
+  <a href="#instalar">Instalar</a>
+  <a href="#compilar">Compilar</a>
+  <a href="#python">Python</a>
+  <a href="#arquitectura">Arquitectura</a>
+  <a href="#changelog">Cambios</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="https://github.com/aurenox-global/keyide">GitHub ↗</a>
+</div></nav>
+
+<header class="hero">
+  <h1>Key<span class="g">IDE</span> 🧠</h1>
+  <p class="claim">IDE de código ligero para <b>Android</b>: editor con pestañas y autocompletado,
+  vista previa web, <b>ejecución real de JavaScript y Python</b>, terminal, <b>Git</b> y copiloto de IA.</p>
+  <div class="btns">
+    <a class="btn primary" href="https://github.com/aurenox-global/keyide/releases/latest">⬇️ Descargar APK</a>
+    <a class="btn ghost" href="https://github.com/aurenox-global/keyide">Ver código en GitHub</a>
+  </div>
+  <p class="author">Creado por <b>Andrés Mag</b> · © 2026 · Licencia MIT</p>
+</header>
+
+<section id="que-es">
+  <h2><span class="n">Qué es</span>Un IDE pensado para el móvil</h2>
+  <p class="lead">KeyIDE nace de analizar lo que <b>falta</b> en los mejores editores de Android
+  (Acode, Squircle IDE, DroidEdit, Spck, AIDE, CxxDroid, Pydroid) y en los entornos en la
+  nube (Codespaces, Replit). Sus carencias repetidas —multi-archivo real, autocompletado,
+  diagnósticos, terminal, run on-device, Git e IA— son justo lo que KeyIDE cubre.</p>
+  <p>Interfaz <b>mobile-first</b>: el editor manda y las herramientas viven en <i>bottom sheets</i>
+  deslizables. Con pantalla ancha o en horizontal se activa el <b>split editor | vista previa</b>.</p>
+  <div>
+    <span class="chip">Kotlin</span><span class="chip">Android Views + Material 3</span>
+    <span class="chip">minSdk 26</span><span class="chip">compileSdk 35</span>
+    <span class="chip">Chaquopy (Python)</span><span class="chip">JGit</span>
+    <span class="chip">SAF</span><span class="chip">IA multi-proveedor</span>
+  </div>
+</section>
+
+<section id="funciones">
+  <h2><span class="n">Funciones</span>Todo lo que incluye</h2>
+  <div class="grid">
+    <div class="card"><div class="ico">📝</div><h3>Editor completo</h3><p>Números de línea, gutter con diagnósticos, resaltado de sintaxis, auto-indentación y auto-cierre de paréntesis/comillas.</p></div>
+    <div class="card"><div class="ico">💡</div><h3>Autocompletado</h3><p>LSP-lite: palabras clave del lenguaje + todas las palabras del documento.</p></div>
+    <div class="card"><div class="ico">📑</div><h3>Multi-archivo</h3><p>Pestañas con buffer independiente e indicador de cambios (<code>●</code>).</p></div>
+    <div class="card"><div class="ico">▶️</div><h3>Run real</h3><p>JavaScript en el motor V8 (con <code>require</code> local) y Python embebido. Salida en el terminal.</p></div>
+    <div class="card"><div class="ico">👁️</div><h3>Vista previa</h3><p>WebView para HTML/CSS/JS/SVG y render de Markdown, o en split lateral.</p></div>
+    <div class="card"><div class="ico">🖥️</div><h3>Terminal</h3><p>Sesión de shell persistente: <code>cd</code> y entorno se conservan entre comandos.</p></div>
+    <div class="card"><div class="ico">🔀</div><h3>Git nativo</h3><p>JGit: estado, init, commit, log, pull, push y clone, sin binario externo.</p></div>
+    <div class="card"><div class="ico">✨</div><h3>Copiloto IA</h3><p>DeepSeek, OpenAI, Claude, Qwen, Kimi, GLM y modelo local (llama.cpp).</p></div>
+    <div class="card"><div class="ico">📂</div><h3>Carpetas reales</h3><p>SAF: abre, navega, crea y edita en cualquier carpeta del dispositivo.</p></div>
+    <div class="card"><div class="ico">🔍</div><h3>Buscar y reemplazar</h3><p>En el documento y en todo el proyecto, con salto a la línea.</p></div>
+    <div class="card"><div class="ico">🎯</div><h3>Ir a definición</h3><p>Salta a la definición de un nombre dentro del documento o del proyecto.</p></div>
+    <div class="card"><div class="ico">🎨</div><h3>Temas y tamaño</h3><p>One Dark, Monokai y Claro; fuente de 10 a 24sp; persistencia de sesión.</p></div>
+  </div>
+</section>
+
+<section id="capturas">
+  <h2><span class="n">Capturas</span>Interfaz</h2>
+  <p class="lead">Añade tus capturas en <code>docs/screenshots/</code> y sustituye los huecos.</p>
+  <div class="shots">
+    <div class="shot">Editor</div><div class="shot">Vista previa</div>
+    <div class="shot">Terminal</div><div class="shot">Git</div>
+    <div class="shot">Copiloto IA</div><div class="shot">Explorador SAF</div>
+  </div>
+</section>
+
+<section id="instalar">
+  <h2><span class="n">Instalar</span>Descarga el APK</h2>
+  <p class="lead">Descarga el último APK desde <a href="https://github.com/aurenox-global/keyide/releases/latest">Releases</a>.</p>
+  <pre><code>1. Descarga el .apk (o el .zip y descomprímelo)
+2. En el móvil: Ajustes → permitir "instalar apps de orígenes desconocidos"
+3. Abre el APK e instala
+4. Al abrir verás el editor con el proyecto de ejemplo</code></pre>
+  <div class="note">El APK incluye el intérprete de Python, por eso pesa ~40 MB. Es normal en apps con Python embebido.</div>
+</section>
+
+<section id="compilar">
+  <h2><span class="n">Compilar</span>Desde el código fuente</h2>
+  <p class="lead">Requisitos: JDK 17 y Android SDK 35. Gradle va incluido (wrapper).</p>
+  <pre><code>git clone https://github.com/aurenox-global/keyide.git
+cd keyide
+echo "sdk.dir=/ruta/a/Android/Sdk" &gt; local.properties
+./gradlew assembleDebug
+# APK → app/build/outputs/apk/debug/app-debug.apk</code></pre>
+</section>
+
+<section id="python">
+  <h2><span class="n">Python</span>Dependencias (pip)</h2>
+  <p class="lead">Chaquopy <b>no</b> tiene pip en el dispositivo: los paquetes se instalan
+  <b>al compilar</b> y viajan dentro del APK.</p>
+  <pre><code>chaquopy {
+    defaultConfig {
+        pip {
+            install("requests")
+            // install("numpy")
+            // install("beautifulsoup4")
+        }
+    }
+}</code></pre>
+  <div class="note">El bloque <code>python { }</code> dentro de <code>android.defaultConfig</code>
+  <b>no compila</b> en Kotlin DSL; hay que usar <code>chaquopy { }</code> a nivel de proyecto.</div>
+</section>
+
+<section id="arquitectura">
+  <h2><span class="n">Arquitectura</span>Cómo está hecho</h2>
+  <pre><code>app/src/main/java/com/keyide/app/
+├── MainActivity.kt        orquesta todo (documentos, sheets, split, paleta)
+├── editor/                CodeEditorView · GutterView · Syntax · EditorTheme · Diagnostic
+├── files/                 Entry · FilesPanel · WorkspaceRepo         (explorador + SAF)
+├── terminal/              ShellSession · TerminalPanel               (shell persistente)
+├── git/                   GitPanel · GitClient                       (JGit)
+├── ai/                    AiClient · AiPanel                         (OpenAI/Anthropic)
+├── run/                   JsRunner (V8 + CommonJS) · PythonBridge    (Chaquopy)
+├── preview/               PreviewPanel                               (WebView)
+├── settings/              SettingsPanel                              (proveedor/modelo)
+├── palette/               CommandPalette
+├── data/                  Settings · AiProviders
+└── util/                  Markdown
+app/src/main/python/runner.py    helper de ejecución de Python</code></pre>
+  <p>Decisiones: <b>Views+Material 3</b> (tamaño/estabilidad), <b>JGit 5.13</b> (Java 8, compatible
+  Android), <b>SAF</b> para carpetas reales, <b>LSP-lite</b> in-process, y <b>WebView V8</b> para JS.</p>
+</section>
+
+<section id="changelog">
+  <h2><span class="n">Cambios</span>Changelog</h2>
+  <div class="log">
+    <h3>0.10.0 <small>— 2026-09-20</small></h3>
+    <ul><li>Node-lite: <code>require()</code> de módulos locales (mini CommonJS), <code>module.exports</code>, <code>process</code>.</li>
+    <li>Ir a definición (LSP-lite) con Ctrl+B o paleta.</li></ul>
+    <h3>0.9.0</h3>
+    <ul><li>Temas del editor (One Dark, Monokai, Claro) y tamaño de fuente.</li>
+    <li>Persistencia de sesión (pestañas abiertas).</li>
+    <li>Terminal con sesión de shell persistente.</li></ul>
+    <h3>0.8.0</h3>
+    <ul><li>Buscar y reemplazar (documento y proyecto).</li>
+    <li>Guardar como / renombrar / borrar. Deshacer/rehacer.</li></ul>
+    <h3>0.7.1 / 0.7.0</h3>
+    <ul><li>Fix de la barra inferior con el teclado.</li>
+    <li>Explorador con SAF, "Acerca de", documentación y LICENSE.</li></ul>
+    <h3>0.6.0 / 0.5.0</h3>
+    <ul><li>Dependencias pip empaquetadas (requests).</li>
+    <li>Git nativo con JGit.</li></ul>
+    <h3>0.4.0 – 0.1.0</h3>
+    <ul><li>Pestañas, split editor/preview, Python embebido, JS real, autocompletado,
+    vista previa, multi-proveedor de IA y esqueleto inicial.</li></ul>
+  </div>
+  <p>Detalle completo en <a href="https://github.com/aurenox-global/keyide/blob/main/CHANGELOG.md">CHANGELOG.md</a>.</p>
+</section>
+
+<section id="roadmap">
+  <h2><span class="n">Roadmap</span>Lo que viene</h2>
+  <ul class="feat todo">
+    <li>LSP real (hover, referencias, renombrar)</li>
+    <li>PTY real en el terminal (control de trabajos)</li>
+    <li>Debugger on-device con breakpoints</li>
+    <li>Formateo de código y snippets</li>
+    <li>Node.js real (npm / módulos nativos)</li>
+    <li>Build on-device (Gradle/Kotlin)</li>
+    <li>Temas claros globales, i18n y tests</li>
+  </ul>
+</section>
+
+<section id="licencia">
+  <h2><span class="n">Licencia</span>MIT</h2>
+  <p class="lead">MIT © 2026 <b>Andrés Mag</b>. Ver
+  <a href="https://github.com/aurenox-global/keyide/blob/main/LICENSE">LICENSE</a>.</p>
+</section>
+
+<footer>
+  <p><b>KeyIDE</b> · Creado por Andrés Mag · © 2026</p>
+  <p><a href="https://github.com/aurenox-global/keyide">github.com/aurenox-global/keyide</a></p>
+</footer>
+
+</body>
+</html>
